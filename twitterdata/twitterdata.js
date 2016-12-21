@@ -57,6 +57,48 @@ function introductonToStatistics() {
     var oneDay = 24*60*60*1000;
     var diffDays = Math.ceil(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
     console.log(startDate + " " + endDate + " number of days between: " + diffDays);
+    var authors = [];
+    var alreadyThere = false;
+    for(u=0;u<globalData.length;u++) {
+        //console.log("running");
+        alreadyThere = false;
+        for(i=0;i<authors.length;i++) {
+            var stringA = globalData[u].handle;
+            var stringB = authors[i].handle;
+            //console.log("is " + stringA + " and " + stringB + " the same?");
+            //console.log(stringA.localeCompare(stringB) === 0);
+            if(stringA.localeCompare(stringB) === 0 && alreadyThere === false) {
+                alreadyThere = true;
+                authors[i].numberOfTweets = authors[i].numberOfTweets + 1;
+            }
+        }
+        //console.log("is he already there? " + alreadyThere);
+        if(alreadyThere === false) {
+            var author = {
+                name:globalData[u].tweeter,
+                handle:globalData[u].handle,
+                numberOfTweets:1,
+            }
+            //console.log("new author!" + globalData[u].tweeter);
+            authors.push(author);
+            //authors[authors.length-1].numberOfTweets = 1;
+        }
+        //console.log(authors);
+    }
+    console.log(authors);
+    var tweets = 0;
+    for(h=0;h<authors.length;h++) {
+        tweets = tweets + authors[h].numberOfTweets;
+    }
+    var likes = 0;
+    for(o=0;o<globalData.length;o++) {
+        likes = likes + globalData[o].likes;
+    }
+    var retweets = 0;
+    for(n=0;n<globalData.length;n++) {
+        retweets = retweets + globalData[n].retweets;
+    }
+    console.log(tweets + " " + authors.length);
 }
 
 //Show Number of tweets, number of likes all over, number of tweeters, mosts tweets in what hour, etc.
