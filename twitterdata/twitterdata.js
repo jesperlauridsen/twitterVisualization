@@ -57,6 +57,7 @@ function introductonToStatistics() {
     var oneDay = 24*60*60*1000;
     var diffDays = Math.ceil(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
     console.log(startDate + " " + endDate + " number of days between: " + diffDays);
+    console.log("yay");
 }
 
 //Show Number of tweets, number of likes all over, number of tweeters, mosts tweets in what hour, etc.
