@@ -25,8 +25,8 @@ function showTwitterData() {
                         tweet:singleTweetArray[4],
                         datatime:singleTweetArray[7],
                         realtime:tweetTime,
-                        likes:singleTweetArray[5],
-                        retweets:singleTweetArray[6],
+                        likes:Number(singleTweetArray[5]),
+                        retweets:Number(singleTweetArray[6]),
                     }
                    arrayOfDataObjects.push(object);
                 }
@@ -47,10 +47,85 @@ function showTweetsOverTime() {
 
 }
 
+function generateSetup() {
+    var intro = document.createElement('div');
+    intro.id = "intro";
+    var length = ((window.innerWidth/4)*1)-30;
+    intro.style.width  = length + "px";
+    intro.style.height = "300px";
+    intro.style.float = "left";
+    document.body.appendChild(intro);
+    //canvas.style.border = "1px solid";
+
+    var identifier = document.createElement('div');
+    identifier.id = "identifier";
+    var length = ((window.innerWidth/4)*1)-30;
+    identifier.style.width  = length + "px";
+    identifier.style.height = "300px";
+    identifier.style.float = "right";
+    document.body.appendChild(identifier);
+
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext("2d");
+    canvas.id = "canvas";
+    canvas.width  = (window.innerWidth/4)*2-30;
+    canvas.height = 300;
+    canvas.style.zIndex = 8;
+    canvas.style.float = "right";
+    canvas.style.border = "1px solid";
+    document.body.appendChild(canvas);
+    var seperateNumber;
+    var arrayOfDividers = [];
+    for(y=1;y<=24;y++) {
+        seperateNumber = canvas.width/25 * y;
+        arrayOfDividers.push(seperateNumber);
+    }
+    console.log(arrayOfDividers);
+    ctx.beginPath();
+    ctx.moveTo(5,5);
+    ctx.lineTo(5,280);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(5,280);
+    ctx.lineTo(canvas.width-5,280);
+    ctx.stroke()
+    for(i=0;i<arrayOfDividers.length;i++) {
+        ctx.beginPath();
+        ctx.moveTo(arrayOfDividers[i],275);
+        ctx.lineTo(arrayOfDividers[i],285);
+        ctx.stroke();
+        //ctx.font = "30px Arial";
+        var textNumber = "";
+        if(i < 10) {
+            textNumber = Number(i) + Number(1);
+            textNumber = "0" + i;
+        }
+        else {
+            textNumber = i + 1;
+        }
+        ctx.fillText(textNumber,arrayOfDividers[i]-5,295);
+    }
+}
+
+function plotData() {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    var days = [];
+    for(i=0;i<globalData;i++) {
+        for(u=0;u<days.length;u++) {
+            else {
+
+            }
+        }
+    }
+
+}
+
 function introductonToStatistics() {
     if(dataInjected === 0) {
        showTwitterData();
     }
+    generateSetup();
     console.log(globalData);
     var endDate = globalData[0].realtime;
     var startDate = globalData[globalData.length-1].realtime;
@@ -90,15 +165,25 @@ function introductonToStatistics() {
     for(h=0;h<authors.length;h++) {
         tweets = tweets + authors[h].numberOfTweets;
     }
+    console.log("number of tweets: " + tweets);
+
     var likes = 0;
     for(o=0;o<globalData.length;o++) {
         likes = likes + globalData[o].likes;
     }
+    console.log("number of likes overall: " + likes);
     var retweets = 0;
     for(n=0;n<globalData.length;n++) {
         retweets = retweets + globalData[n].retweets;
     }
-    console.log(tweets + " " + authors.length);
+    console.log("Number of retweets " + retweets);
+    console.log("Number of authors " + " " + authors.length);
+    var text = "<h3>Breakdown of #DST4L</h3><p>This dataset contains tweets from <strong>" + diffDays + "</strong> days, the " + startDate.getDate() + "/" + startDate.getMonth() + "-" + startDate.getFullYear() + " to " + endDate.getDate() + "/" + endDate.getMonth() + "-" + endDate.getFullYear() + ", which was <strong>" + tweets + "</strong> tweets written by <strong>" + authors.length + "</strong> authors using the hashtag #DST4L. This means <strong>" + tweets/diffDays + "</strong> tweets per day. There was a total of <strong>" + likes + "</strong> likes on these tweets, giving an average of <strong>" + (likes/tweets).toFixed(2) + "</strong> likes per tweet. There was <strong>" + retweets + "</strong> retweets on these tweets, giving an average of <strong>" + (retweets/tweets).toFixed(2) + "</strong> retweets per tweet.</p>";
+    document.getElementById("intro").innerHTML = text;
+}
+
+function showDayProgress() {
+    generateCanvas();
 }
 
 //Show Number of tweets, number of likes all over, number of tweeters, mosts tweets in what hour, etc.

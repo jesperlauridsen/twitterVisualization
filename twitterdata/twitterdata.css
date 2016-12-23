@@ -1,5 +1,7 @@
-#test {
-    width:200px;
-    height:200px;
-    background-color:aqua;
+#intro p {
+    font-size:15px;
+}
+
+#intro h3 {
+    margin-top:-5px;
 }
