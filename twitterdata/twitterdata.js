@@ -111,11 +111,10 @@ function plotData() {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     var days = [];
-    for(i=0;i<globalData;i++) {
+    console.log("yay" + globalData);
+    for(n=0;n<globalData.length;n++) {
         for(u=0;u<days.length;u++) {
-            else {
-
-            }
+            console.log("plugging!");
         }
     }
 
@@ -178,13 +177,11 @@ function introductonToStatistics() {
     }
     console.log("Number of retweets " + retweets);
     console.log("Number of authors " + " " + authors.length);
-    var text = "<h3>Breakdown of #DST4L</h3><p>This dataset contains tweets from <strong>" + diffDays + "</strong> days, the " + startDate.getDate() + "/" + startDate.getMonth() + "-" + startDate.getFullYear() + " to " + endDate.getDate() + "/" + endDate.getMonth() + "-" + endDate.getFullYear() + ", which was <strong>" + tweets + "</strong> tweets written by <strong>" + authors.length + "</strong> authors using the hashtag #DST4L. This means <strong>" + tweets/diffDays + "</strong> tweets per day. There was a total of <strong>" + likes + "</strong> likes on these tweets, giving an average of <strong>" + (likes/tweets).toFixed(2) + "</strong> likes per tweet. There was <strong>" + retweets + "</strong> retweets on these tweets, giving an average of <strong>" + (retweets/tweets).toFixed(2) + "</strong> retweets per tweet.</p>";
+    var text = "<h3>Breakdown of #DST4L</h3><p>This dataset contains tweets from <strong>" + diffDays + "</strong> days, the " + startDate.getDate() + "/" + startDate.getMonth() + "-" + startDate.getFullYear() + " to " + endDate.getDate() + "/" + endDate.getMonth() + "-" + endDate.getFullYear() + ", which was <strong>" + tweets + "</strong> tweets written by <strong>" + authors.length + "</strong> authors using the hashtag #DST4L. This means an average of <strong>" + tweets/diffDays + "</strong> tweets per day. There was a total of <strong>" + likes + "</strong> likes on these tweets, giving an average of <strong>" + (likes/tweets).toFixed(2) + "</strong> likes per tweet. There was <strong>" + retweets + "</strong> retweets on these tweets, giving an average of <strong>" + (retweets/tweets).toFixed(2) + "</strong> retweets per tweet.</p>";
     document.getElementById("intro").innerHTML = text;
+    plotData();
 }
 
-function showDayProgress() {
-    generateCanvas();
-}
 
 //Show Number of tweets, number of likes all over, number of tweeters, mosts tweets in what hour, etc.
 function showOverallStatistics() {
