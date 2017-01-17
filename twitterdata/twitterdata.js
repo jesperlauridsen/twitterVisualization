@@ -107,17 +107,125 @@ function generateSetup() {
     }
 }
 
-function plotData() {
+function plotData(dataset) {
+    //10 pre-set colors. Enough for now, yes?
+    var presetColors= ["rgba(255, 0, 255, 0.5)","rgba(0, 0, 255, 0.5)","rgba(0, 255, 255, 0.5)","rgba(0, 128, 128, 0.5)","rgba(0, 255, 0, 0.5)","rgba(255, 255, 0, 0.5)","rgba(255, 0, 0, 0.5)","rgba(192, 192, 192, 0.5)","rgba(0, 0, 0, 0.5)","rgba(255,69,0, 0.5)"];
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     var days = [];
-    console.log("yay" + globalData);
-    for(n=0;n<globalData.length;n++) {
-        for(u=0;u<days.length;u++) {
-            console.log("plugging!");
+    var hours = [];
+    var existing = 0;
+    //console.log("yay" + globalData);
+    for(n=0;n<dataset.length;n++) {
+        existing = 0;
+        for(y=0;y<days.length;y++) {
+            if(dataset[n].realtime.getDate() === days[y][0].realtime.getDate() && dataset[n].realtime.getMonth() === days[y][0].realtime.getMonth() && dataset[n].realtime.getFullYear() === days[y][0].realtime.getFullYear()) {
+                existing = 1;
+                days[y].push(dataset[n])
+            }
+        }
+        if(existing === 0) {
+            days[days.length] = new Array();
+            days[days.length-1].push(dataset[n]);
+        }
+    }
+    //console.log(days);
+    for(u=0;u<days.length;u++) {
+        hours[hours.length] = new Array();
+        for(h=0;h<24;h++) {
+        var value = 0;
+        hours[hours.length-1].push(value);
+    }
+        for(i=0;i<days[u].length;i++) {
+            var newValue = hours[hours.length-1][days[u][i].realtime.getHours()] + 1;
+            hours[hours.length-1][days[u][i].realtime.getHours()] = newValue;
+            //console.log(days[u][i].realtime.getHours());
+            }
+        }
+
+    var highestHour = 0;
+    for(n=0;n<hours.length;n++) {
+        for(k=0;k<hours[n].length;k++) {
+            if(hours[n][k] >= highestHour) {
+                highestHour = hours[n][k];
+            }
         }
     }
 
+    hours.reverse();
+    days.reverse();
+    ctx.strokeStyle = "#000000";
+    ctx.beginPath();
+    ctx.moveTo(5,5);
+    ctx.lineTo(10,5)
+    ctx.stroke();
+    ctx.fillText(highestHour,10,9)
+
+    ctx.strokeStyle = "#000000";
+    ctx.beginPath();
+    ctx.moveTo(5,137.5);
+    ctx.lineTo(10,137.5);
+    ctx.stroke();
+    ctx.fillText(Math.floor(highestHour/2),10,141.5)
+
+    for(o=0;o<days.length;o++) {
+        //console.log(days[o][0].realtime.getDate());
+        //ctx.fillText(days[o][0].realtime.getDate() + "/" + days[o][0].realtime.getMonth() + "-" +days[o][0].realtime.getFullYear(),canvas.width-150,10 +(o*10));
+    }
+
+    var arrayOfDividers = [];
+    for(y=1;y<=24;y++) {
+        seperateNumber = canvas.width/25 * y;
+        arrayOfDividers.push(seperateNumber);
+    }
+    for(n=0;n<hours.length;n++) {
+        ctx.fillStyle = presetColors[n];
+        ctx.font = "16px Arial";
+        ctx.fillText(days[n][0].realtime.getDate() + "/" + days[n][0].realtime.getMonth() + "-" +days[n][0].realtime.getFullYear() + " (" + days[n].length + " tweets)" ,canvas.width-185,20 +(n*20));
+        for(k=0;k<hours[n].length;k++) {
+            var heightZ;
+            if(hours[n][k] === 0) {
+                heightZ = 280;
+            }
+            else {
+                heightZ = 280 - ((hours[n][k] / highestHour) * 275);
+            }
+            var hour = k + 1;
+            //console.log("day: " + n + " hour: " + hour + " number of tweets: " + hours[n][k] + " height: " + heightZ);
+            ctx.fillStyle = presetColors[n];
+            ctx.beginPath();
+            //console.log(arrayOfDividers[k] + " " + heightZ + " " + hours[n][k]);
+            ctx.arc(arrayOfDividers[k],heightZ,2,0,2*Math.PI);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.fill();
+            console.log("painting?");
+        }
+    }
+    for(n=0;n<hours.length;n++) {
+        for(k=0;k<hours[n].length;k++) {
+            var HZ;
+            var HX;
+            if(hours[n][k] === 0) {
+                HZ = 280;
+            }
+            else {
+                HZ = 280 - ((hours[n][k] / highestHour) * 275);
+            }
+            if(hours[n][k+1] === 0) {
+                HX = 280;
+            }
+            else {
+                HX = 280 - ((hours[n][k+1] / highestHour) * 275);
+            }
+            ctx.strokeStyle = presetColors[n];
+            ctx.beginPath();
+            ctx.moveTo(arrayOfDividers[k],HZ);
+            ctx.lineTo(arrayOfDividers[k+1],HX);
+            ctx.stroke();
+        }
+    }
+    console.log(days);
 }
 
 function introductonToStatistics() {
@@ -179,7 +287,7 @@ function introductonToStatistics() {
     console.log("Number of authors " + " " + authors.length);
     var text = "<h3>Breakdown of #DST4L</h3><p>This dataset contains tweets from <strong>" + diffDays + "</strong> days, the " + startDate.getDate() + "/" + startDate.getMonth() + "-" + startDate.getFullYear() + " to " + endDate.getDate() + "/" + endDate.getMonth() + "-" + endDate.getFullYear() + ", which was <strong>" + tweets + "</strong> tweets written by <strong>" + authors.length + "</strong> authors using the hashtag #DST4L. This means an average of <strong>" + tweets/diffDays + "</strong> tweets per day. There was a total of <strong>" + likes + "</strong> likes on these tweets, giving an average of <strong>" + (likes/tweets).toFixed(2) + "</strong> likes per tweet. There was <strong>" + retweets + "</strong> retweets on these tweets, giving an average of <strong>" + (retweets/tweets).toFixed(2) + "</strong> retweets per tweet.</p>";
     document.getElementById("intro").innerHTML = text;
-    plotData();
+    plotData(globalData);
 }
 
 
