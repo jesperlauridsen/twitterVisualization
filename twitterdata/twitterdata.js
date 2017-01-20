@@ -41,10 +41,6 @@ function showTwitterData() {
 }
 //Show tweets over time from the period
 function showTweetsOverTime() {
-    if(dataInjected === 0) {
-       showTwitterData();
-    }
-
 }
 
 function generateSetup() {
@@ -52,32 +48,45 @@ function generateSetup() {
     intro.id = "intro";
     var length = ((window.innerWidth/4)*1)-30;
     intro.style.width  = length + "px";
-    intro.style.height = "300px";
+    intro.style.height = "350px";
     intro.style.float = "left";
     document.body.appendChild(intro);
     //canvas.style.border = "1px solid";
 
     var identifier = document.createElement('div');
-    identifier.id = "identifier";
-    var length = ((window.innerWidth/4)*1)-30;
+    identifier.id = "canvasContainer";
+    var length = ((window.innerWidth/4)*3)-30;
     identifier.style.width  = length + "px";
-    identifier.style.height = "300px";
+    identifier.style.height = "350px";
     identifier.style.float = "right";
     document.body.appendChild(identifier);
+
+    var canvasHeadline = document.createElement('h3');
+    canvasHeadline.id = "canvasHeadline";
+    var length2 = ((window.innerWidth/4)*3)-30;
+    canvasHeadline.style.width  = length2 + "px";
+    identifier.style.height = "50px";
+    document.getElementById("canvasContainer").appendChild(canvasHeadline);
 
     var canvas = document.createElement('canvas');
     var ctx = canvas.getContext("2d");
     canvas.id = "canvas";
-    canvas.width  = (window.innerWidth/4)*2-30;
+    canvas.width = ((window.innerWidth/4)*3)-30;
     canvas.height = 300;
     canvas.style.zIndex = 8;
-    canvas.style.float = "right";
     canvas.style.border = "1px solid";
-    document.body.appendChild(canvas);
+    document.getElementById("canvasContainer").appendChild(canvas);
+}
+
+function plotDataForAllDaysIn24HourInterval(dataset) {
+    document.getElementById("canvasHeadline").innerHTML = "All tweets in the period in a 24 hour grid";
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     var seperateNumber;
     var arrayOfDividers = [];
     for(y=1;y<=24;y++) {
-        seperateNumber = canvas.width/25 * y;
+        seperateNumber = document.getElementById("canvas").width/25 * y;
         arrayOfDividers.push(seperateNumber);
     }
     console.log(arrayOfDividers);
@@ -105,9 +114,6 @@ function generateSetup() {
         }
         ctx.fillText(textNumber,arrayOfDividers[i]-5,295);
     }
-}
-
-function plotData(dataset) {
     //10 pre-set colors. Enough for now, yes?
     var presetColors= ["rgba(255, 0, 255, 0.5)","rgba(0, 0, 255, 0.5)","rgba(0, 255, 255, 0.5)","rgba(0, 128, 128, 0.5)","rgba(0, 255, 0, 0.5)","rgba(255, 255, 0, 0.5)","rgba(255, 0, 0, 0.5)","rgba(192, 192, 192, 0.5)","rgba(0, 0, 0, 0.5)","rgba(255,69,0, 0.5)"];
     var canvas = document.getElementById("canvas");
@@ -192,6 +198,7 @@ function plotData(dataset) {
             }
             var hour = k + 1;
             //console.log("day: " + n + " hour: " + hour + " number of tweets: " + hours[n][k] + " height: " + heightZ);
+            ctx.strokeStyle = presetColors[n];
             ctx.fillStyle = presetColors[n];
             ctx.beginPath();
             //console.log(arrayOfDividers[k] + " " + heightZ + " " + hours[n][k]);
@@ -199,7 +206,7 @@ function plotData(dataset) {
             ctx.stroke();
             ctx.closePath();
             ctx.fill();
-            console.log("painting?");
+            //console.log("painting?");
         }
     }
     for(n=0;n<hours.length;n++) {
@@ -286,33 +293,32 @@ function introductonToStatistics() {
     console.log("Number of retweets " + retweets);
     console.log("Number of authors " + " " + authors.length);
     var text = "<h3>Breakdown of #DST4L</h3><p>This dataset contains tweets from <strong>" + diffDays + "</strong> days, the " + startDate.getDate() + "/" + startDate.getMonth() + "-" + startDate.getFullYear() + " to " + endDate.getDate() + "/" + endDate.getMonth() + "-" + endDate.getFullYear() + ", which was <strong>" + tweets + "</strong> tweets written by <strong>" + authors.length + "</strong> authors using the hashtag #DST4L. This means an average of <strong>" + tweets/diffDays + "</strong> tweets per day. There was a total of <strong>" + likes + "</strong> likes on these tweets, giving an average of <strong>" + (likes/tweets).toFixed(2) + "</strong> likes per tweet. There was <strong>" + retweets + "</strong> retweets on these tweets, giving an average of <strong>" + (retweets/tweets).toFixed(2) + "</strong> retweets per tweet.</p>";
-    document.getElementById("intro").innerHTML = text;
-    plotData(globalData);
+    document.getElementById("intro").innerHTML += text;
+    plotDataForAllDaysIn24HourInterval(globalData);
 }
 
 
 //Show Number of tweets, number of likes all over, number of tweeters, mosts tweets in what hour, etc.
-function showOverallStatistics() {
-   if(dataInjected === 0) {
-       showTwitterData();
-    }
-
+function showOverallStatistics(dataset) {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 //List of contributers / procentage of tweets from every single contributor.
-function showBiggestContributors() {
-    if(dataInjected === 0) {
-       showTwitterData();
-    }
+function showBiggestContributors(dataset) {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 //List of most retweeted / procentage of retweets from the entire retweeters.
-function showMostRetweeted() {
-    if(dataInjected === 0) {
-       showTwitterData();
-    }
+function showMostRetweeted(dataset) {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 //List of most liked / procentage of all likes on the hashtag in that time interval.
-function showMostLiked() {
-    if(dataInjected === 0) {
-       showTwitterData();
-    }
+function showMostLiked(dataset) {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
