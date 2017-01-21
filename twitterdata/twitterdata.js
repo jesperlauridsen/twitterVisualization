@@ -34,6 +34,7 @@ function showTwitterData() {
                 globalData = arrayOfDataObjects;
                 dataInjected = 1;
                 introductonToStatistics();
+                personWithMostLikes(globalData);
             }
         }
     }
@@ -235,6 +236,10 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
     console.log(days);
 }
 
+function showEntireEventTweetProgress(dataset) {
+
+}
+
 function introductonToStatistics() {
     if(dataInjected === 0) {
        showTwitterData();
@@ -300,25 +305,106 @@ function introductonToStatistics() {
 
 //Show Number of tweets, number of likes all over, number of tweeters, mosts tweets in what hour, etc.
 function showOverallStatistics(dataset) {
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 //List of contributers / procentage of tweets from every single contributor.
-function showBiggestContributors(dataset) {
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+function showAllContributors(dataset) {
+    //var canvas = document.getElementById("canvas");
+    //var ctx = canvas.getContext("2d");
+    //ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var contributors = [];
+    var alreadyPresent = 0;
+    for(i=0;i<dataset.length;i++) {
+        alreadyPresent = 0;
+        for(u=0;u<contributors.length;u++) {
+            if(contributors[u].handle === dataset[i].handle) {
+                alreadyPresent = 1;
+                contributors[u].tweetsByTweeter = contributors[u].tweetsByTweeter + 1;
+            }
+        }
+        if(alreadyPresent === 0) {
+            var tweeterObject = {
+                handle:dataset[i].handle,
+                tweetsByTweeter:1,
+                name:dataset[i].tweeter,
+            }
+            contributors.push(tweeterObject);
+            contributors[contributors.length-1].tweetsByTweeter = 1;
+        }
+    }
+    contributors.sort(function(a, b) {return parseFloat(a.tweetsByTweeter) - parseFloat(b.tweetsByTweeter);});
+    contributors.reverse();
+    console.log(contributors);
 }
+
 //List of most retweeted / procentage of retweets from the entire retweeters.
 function showMostRetweeted(dataset) {
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    dataset.sort(function(a, b) {return parseFloat(a.retweets) - parseFloat(b.retweets);});
+    dataset.reverse();
+    console.log(dataset)
 }
 //List of most liked / procentage of all likes on the hashtag in that time interval.
 function showMostLiked(dataset) {
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    dataset.sort(function(a, b) {return parseFloat(a.likes) - parseFloat(b.likes);});
+    dataset.reverse();
+    console.log(dataset)
+}
+
+function PersonWithMostRetweets(dataset) {
+    var retweeters = [];
+    var alreadyPresent = 0;
+    for(i=0;i<dataset.length;i++) {
+        alreadyPresent = 0;
+        for(u=0;u<retweeters.length;u++) {
+            if(retweeters[u].handle === dataset[i].handle) {
+                alreadyPresent = 1;
+                retweeters[u].allRetweets = retweeters[u].allRetweets + dataset[i].retweets;
+                retweeters[u].numberOfTweets = retweeters[u].numberOfTweets + 1;
+            }
+        }
+        if(alreadyPresent === 0) {
+            var tweeterObject = {
+                handle:dataset[i].handle,
+                allRetweets:dataset[i].retweets,
+                name:dataset[i].tweeter,
+                numberOfTweets:1,
+            }
+            retweeters.push(tweeterObject);
+        }
+    }
+    retweeters.sort(function(a, b) {return parseFloat(a.allRetweets) - parseFloat(b.allRetweets);});
+    retweeters.reverse();
+    for(k=0;k<retweeters.length;k++) {
+        retweeters[k].retweetRatio = Math.round(retweeters[k].allRetweets/retweeters[k].numberOfTweets *100) / 100;
+    }
+    console.log(retweeters);
+}
+
+function personWithMostLikes(dataset) {
+    var likes = [];
+    var alreadyPresent = 0;
+    for(i=0;i<dataset.length;i++) {
+        alreadyPresent = 0;
+        for(u=0;u<likes.length;u++) {
+            if(likes[u].handle === dataset[i].handle) {
+                alreadyPresent = 1;
+                likes[u].allLikes = likes[u].allLikes + dataset[i].likes;
+                likes[u].numberOfTweets = likes[u].numberOfTweets + 1;
+            }
+        }
+        if(alreadyPresent === 0) {
+            var tweeterObject = {
+                handle:dataset[i].handle,
+                allLikes:dataset[i].likes,
+                name:dataset[i].tweeter,
+                numberOfTweets:1,
+            }
+            likes.push(tweeterObject);
+        }
+    }
+    likes.sort(function(a, b) {return parseFloat(a.allLikes) - parseFloat(b.allLikes);});
+    likes.reverse();
+    for(k=0;k<likes.length;k++) {
+        likes[k].retweetRatio = Math.round(likes[k].allLikes/likes[k].numberOfTweets *100) / 100;
+    }
+    console.log(likes);
 }
