@@ -34,8 +34,8 @@ function showTwitterData() {
                 globalData = arrayOfDataObjects;
                 dataInjected = 1;
                 introductonToStatistics();
-                //showEntireEventTweetProgress(globalData);
-                plotDataForAllDaysIn24HourInterval(globalData);
+                showEntireEventTweetProgress(globalData);
+                //plotDataForAllDaysIn24HourInterval(globalData);
             }
         }
     }
@@ -239,6 +239,11 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
 }
 
 function showEntireEventTweetProgress(dataset) {
+    var endDate = globalData[0].realtime;
+    var startDate = globalData[globalData.length-1].realtime;
+    var oneDay = 24*60*60*1000;
+    var diffDays = Math.ceil(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
+    console.log(diffDays);
 }
 
 function introductonToStatistics() {
