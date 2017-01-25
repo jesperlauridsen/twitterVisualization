@@ -239,11 +239,22 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
 }
 
 function showEntireEventTweetProgress(dataset) {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
     var endDate = globalData[0].realtime;
     var startDate = globalData[globalData.length-1].realtime;
     var oneDay = 24*60*60*1000;
     var diffDays = Math.ceil(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
     console.log(diffDays);
+    var difference = canvas.width/diffDays;
+    for(y=1;y<diffDays;y++) {
+        ctx.strokeStyle = "#000000";
+        ctx.beginPath();
+        console.log()
+        ctx.moveTo(Math.floor(y*difference),280);
+        ctx.lineTo(Math.floor(y*difference),290);
+        ctx.stroke();
+    }
 }
 
 function introductonToStatistics() {
