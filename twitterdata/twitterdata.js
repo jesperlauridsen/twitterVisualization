@@ -243,17 +243,30 @@ function showEntireEventTweetProgress(dataset) {
     var ctx = canvas.getContext("2d");
     var endDate = globalData[0].realtime;
     var startDate = globalData[globalData.length-1].realtime;
+    var startDateToText = globalData[globalData.length-1].realtime;
     var oneDay = 24*60*60*1000;
     var diffDays = Math.ceil(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
     console.log(diffDays);
     var difference = canvas.width/diffDays;
+    ctx.beginPath();
+    ctx.moveTo(5,5);
+    ctx.lineTo(5,280);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(5,280);
+    ctx.lineTo(canvas.width-5,280);
+    ctx.stroke();
+    ctx.fillText(startDateToText.getDate() + "/" + startDateToText.getMonth(),0,295);
+    startDateToText.setDate(startDateToText.getDate()+1);
     for(y=1;y<diffDays;y++) {
         ctx.strokeStyle = "#000000";
         ctx.beginPath();
         console.log()
         ctx.moveTo(Math.floor(y*difference),280);
-        ctx.lineTo(Math.floor(y*difference),290);
+        ctx.lineTo(Math.floor(y*difference),285);
         ctx.stroke();
+        ctx.fillText(startDateToText.getDate() + "/" + startDateToText.getMonth(),y*difference-10,295);
+        startDateToText.setDate(startDateToText.getDate()+1);
     }
 }
 
