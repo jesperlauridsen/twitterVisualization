@@ -37,16 +37,13 @@ function showTwitterData() {
                 globalData = arrayOfDataObjects;
                 dataInjected = 1;
                 introductonToStatistics(globalData);
+                creatingTweetOverview(globalData);
                 showEntireEventTweetProgress(globalData);
                 //plotDataForAllDaysIn24HourInterval(globalData);
             }
         }
     }
     rawFile.send(null);
-}
-//Show tweets over time from the period
-function showTweetsOverTime() {
-
 }
 
 function generateSetup() {
@@ -71,7 +68,7 @@ function generateSetup() {
     canvasHeadline.id = "canvasHeadline";
     var length2 = ((window.innerWidth/4)*3)-30;
     canvasHeadline.style.width  = length2 + "px";
-    identifier.style.height = "50px";
+    //canvasHeadline.style.height = "50px";
     document.getElementById("canvasContainer").appendChild(canvasHeadline);
 
     var canvas = document.createElement('canvas');
@@ -245,6 +242,7 @@ function showEntireEventTweetProgress(dataset) {
     var presetColors= ["rgba(255, 0, 255, 0.5)","rgba(0, 0, 255, 0.5)","rgba(0, 255, 255, 0.5)","rgba(0, 128, 128, 0.5)","rgba(0, 255, 0, 0.5)","rgba(255, 255, 0, 0.5)","rgba(255, 0, 0, 0.5)","rgba(192, 192, 192, 0.5)","rgba(0, 0, 0, 0.5)","rgba(255,69,0, 0.5)"];
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
+    document.getElementById("canvasHeadline").innerHTML = "All tweets in the dataset over the entire period of time.";
     sortedDataset = globalData.sort(function(a, b) {return parseFloat(a.realtime.getTime()) - parseFloat(b.realtime.getTime());});
     console.log("---");
     var endDate = sortedDataset[0].realtime;
@@ -405,6 +403,39 @@ function showEntireEventTweetProgress(dataset) {
 
 }
 
+function creatingTweetOverview(dataset) {
+    var field = document.createElement('div');
+    field.id = "field";
+    var length = ((window.innerWidth/3)*1)-10;
+    field.style.width  = length + "px";
+    field.style.height = "100px";
+    field.style.float = "left";
+    field.style.marginTop = "50px";
+    field.className = "listContainer";
+    document.body.appendChild(field);
+
+    var field2 = document.createElement('div');
+    field2.id = "field2";
+    var length = ((window.innerWidth/3)*1)-10;
+    field2.style.width  = length + "px";
+    field2.style.height = "100px";
+    field2.style.float = "left";
+    field2.style.marginTop = "50px";
+    field2.className = "listContainer";
+    document.body.appendChild(field2);
+
+    var field3 = document.createElement('div');
+    field3.id = "field3";
+    var length = ((window.innerWidth/3)*1)-10;
+    field3.style.width  = length + "px";
+    field3.style.height = "100px";
+    field3.style.float = "left";
+    field3.style.marginTop = "50px";
+    field3.className = "listContainer";
+    document.body.appendChild(field3);
+}
+
+//Display the overall layout of the tweeter-dataset.
 function introductonToStatistics(dataset) {
     if(dataInjected === 0) {
        showTwitterData();
