@@ -250,7 +250,7 @@ function showEntireEventTweetProgress(dataset) {
     var endDate = sortedDataset[0].realtime;
     var startDate = sortedDataset[sortedDataset.length-1].realtime;
     var startDateToText = new Date();
-    startDateToText.setTime(sortedDataset[sortedDataset.length-1].realtime);
+    startDateToText.setTime(sortedDataset[0].realtime);
     console.log(sortedDataset);
     console.log(startDate);
     console.log(endDate);
@@ -267,7 +267,7 @@ function showEntireEventTweetProgress(dataset) {
             ctx.moveTo((singlePoint*y)+(u*difference),281);
             ctx.lineTo((singlePoint*y)+(u*difference),283);
             ctx.stroke();
-            if(y%2 == 0) {
+            //if(y%2 == 0) {
                ctx.font="7px Arial";
                 if(y < 10) {
                     ctx.fillText(y,(singlePoint*y)+(u*difference)-3,290);
@@ -275,7 +275,7 @@ function showEntireEventTweetProgress(dataset) {
                 else {
                     ctx.fillText(y,(singlePoint*y)+(u*difference)-5,290);
                 }
-            }
+            //}
         }
     }
     ctx.beginPath();
@@ -287,7 +287,8 @@ function showEntireEventTweetProgress(dataset) {
     ctx.lineTo(canvas.width-5,280);
     ctx.stroke();
     ctx.font="10px Arial";
-    ctx.fillText(startDateToText.getDate() + "/" + startDateToText.getMonth(),0,295);
+    var monthToDisplay = startDateToText.getMonth() + 1;
+    ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,0,295);
     startDateToText.setDate(startDateToText.getDate()+1);
     for(y=1;y<diffDays;y++) {
         ctx.strokeStyle = "#000000";
@@ -297,8 +298,9 @@ function showEntireEventTweetProgress(dataset) {
         ctx.lineTo(Math.floor(y*difference),285);
         ctx.stroke();
         ctx.font="10px Arial";
-        ctx.fillText(startDateToText.getDate() + "/" + startDateToText.getMonth(),y*difference-10,295);
+        ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,y*difference-10,295);
         startDateToText.setDate(startDateToText.getDate()+1);
+        monthToDisplay = startDateToText.getMonth() + 1;
     }
     var days = [];
     var hours = [];
@@ -312,7 +314,7 @@ function showEntireEventTweetProgress(dataset) {
             }
         }
         if(existing === 0) {
-            console.log("NEW! " + dataset[n].realtime + " " + dataset[n].tweet + " " + dataset[n].datatime);
+            //console.log("NEW! " + dataset[n].realtime + " " + dataset[n].tweet + " " + dataset[n].datatime);
             days[days.length] = new Array();
             days[days.length-1].push(dataset[n]);
         }
@@ -372,7 +374,7 @@ function showEntireEventTweetProgress(dataset) {
             ctx.fillStyle = presetColors[n];
             ctx.beginPath();
             //console.log(arrayOfDividers[k] + " " + heightZ + " " + hours[n][k]);
-            ctx.arc((singlePoint*(k+1))+((n)*difference),heightZ,2,0,2*Math.PI);
+            ctx.arc((singlePoint*(k))+((n)*difference)+(singlePoint/2),heightZ,2,0,2*Math.PI);
             ctx.stroke();
             ctx.closePath();
             ctx.fill();
@@ -381,6 +383,7 @@ function showEntireEventTweetProgress(dataset) {
     }
     for(n=0;n<hours.length;n++) {
         for(k=0;k<hours[n].length;k++) {
+            var draw = 1;
             var HZ;
             var HX;
             if(hours[n][k] === 0) {
@@ -392,14 +395,25 @@ function showEntireEventTweetProgress(dataset) {
             if(hours[n][k+1] === 0) {
                 HX = 280;
             }
+            else if(hours[n][k+1] === undefined) {
+                try {
+                HX = 280 - ((hours[n+1][0] / highestHour) * 275);
+                console.log(hours[n+1][0] + " " + HX);
+                }
+                catch(err) {
+                   draw = 0;
+                }
+            }
             else {
                 HX = 280 - ((hours[n][k+1] / highestHour) * 275);
             }
+            if(draw === 1) {
             ctx.strokeStyle = presetColors[n];
             ctx.beginPath();
-            ctx.moveTo((singlePoint*(k+1))+((n)*difference),HZ);
-            ctx.lineTo((singlePoint*(k+2))+((n)*difference),HX);
+            ctx.moveTo((singlePoint*(k))+((n)*difference)+(singlePoint/2),HZ);
+            ctx.lineTo((singlePoint*(k+1))+((n)*difference)+(singlePoint/2),HX);
             ctx.stroke();
+            }
         }
     }
 
