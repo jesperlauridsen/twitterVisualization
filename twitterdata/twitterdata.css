@@ -1,3 +1,15 @@
 #intro p {
     font-size:15px;
 }
+
+
+.listContainer {
+    height:250px !important;
+    width:32% !important;
+    background-color:cornflowerblue;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-left:0.5%;
+    margin-right:0.5%;
+}
