@@ -3,7 +3,7 @@ var dataInjected = 0;
 
 function showTwitterData() {
     var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", "finaltweeterdata-sorted.csv", true);
+    rawFile.open("GET", "finaltweeterdata-sorted2.csv", true);
     rawFile.onreadystatechange = function ()
     {
         if(rawFile.readyState === 4)
@@ -39,6 +39,9 @@ function showTwitterData() {
                 introductonToStatistics(globalData);
                 creatingTweetOverview(globalData);
                 showEntireEventTweetProgress(globalData);
+                personWithHighestTweets(globalData,"field");
+                showMostLiked(globalData,"field2");
+                showMostRetweeted(globalData,"field3");
                 //plotDataForAllDaysIn24HourInterval(globalData);
             }
         }
@@ -47,22 +50,27 @@ function showTwitterData() {
 }
 
 function generateSetup() {
+    var introContainer = document.createElement('div');
+    introContainer.id = "introContainer";
+    introContainer.className = "introContainer";
+    document.body.appendChild(introContainer);
+
     var intro = document.createElement('div');
     intro.id = "intro";
     var length = ((window.innerWidth/4)*1)-30;
     intro.style.width  = length + "px";
     intro.style.height = "350px";
     intro.style.float = "left";
-    document.body.appendChild(intro);
+    document.getElementById("introContainer").appendChild(intro);
     //canvas.style.border = "1px solid";
 
     var identifier = document.createElement('div');
     identifier.id = "canvasContainer";
     var length = ((window.innerWidth/4)*3)-30;
     identifier.style.width  = length + "px";
-    identifier.style.height = "350px";
+    //identifier.style.height = "350px";
     identifier.style.float = "right";
-    document.body.appendChild(identifier);
+    document.getElementById("introContainer").appendChild(identifier);
 
     var canvasHeadline = document.createElement('h3');
     canvasHeadline.id = "canvasHeadline";
@@ -418,6 +426,30 @@ function showEntireEventTweetProgress(dataset) {
 }
 
 function creatingTweetOverview(dataset) {
+
+    var headlineContainer = document.createElement('div');
+    headlineContainer.id = "headlineContainer";
+    headlineContainer.className = "headlineContainer";
+    document.body.appendChild(headlineContainer);
+
+    var headline = document.createElement('div');
+    headline.id = "headline1";
+    headline.className = "headline";
+    document.getElementById("headlineContainer").appendChild(headline);
+    document.getElementById("headline1").innerHTML = "<h3>Most contributions</h3>";
+
+    var headline1 = document.createElement('div');
+    headline1.id = "headline2";
+    headline1.className = "headline";
+    document.getElementById("headlineContainer").appendChild(headline1);
+    document.getElementById("headline2").innerHTML = "<h3>Most liked tweets</h3>";
+
+    var headline2 = document.createElement('div');
+    headline2.id = "headline3";
+    headline2.className = "headline";
+    document.getElementById("headlineContainer").appendChild(headline2);
+    document.getElementById("headline3").innerHTML = "<h3>Most retweeted tweets</h3>";
+
     var field = document.createElement('div');
     field.id = "field";
     var length = ((window.innerWidth/3)*1)-10;
@@ -447,6 +479,8 @@ function creatingTweetOverview(dataset) {
     field3.style.marginTop = "50px";
     field3.className = "listContainer";
     document.body.appendChild(field3);
+
+
 }
 
 //Display the overall layout of the tweeter-dataset.
@@ -547,16 +581,33 @@ function showAllContributors(dataset) {
 }
 
 //List of most retweeted / procentage of retweets from the entire retweeters.
-function showMostRetweeted(dataset) {
-    dataset.sort(function(a, b) {return parseFloat(a.retweets) - parseFloat(b.retweets);});
-    dataset.reverse();
-    console.log(dataset)
+function showMostRetweeted(dataset,divZ) {
+    var datasetNow = dataset;
+    datasetNow.sort(function(a, b) {return parseFloat(a.retweets) - parseFloat(b.retweets);});
+    datasetNow.reverse();
+    console.log(datasetNow);
+    for(u=0;u<datasetNow.length;u++) {
+        var fieldX = document.createElement('div');
+        fieldX.id = "contributorField3" + u;
+        fieldX.className = "listContainerEntry";
+        document.getElementById(divZ).appendChild(fieldX);
+        document.getElementById("contributorField3"+u).innerHTML = datasetNow[u].tweet + " (" + datasetNow[u].handle + ") " + datasetNow[u].retweets;
+    }
 }
 //List of most liked / procentage of all likes on the hashtag in that time interval.
-function showMostLiked(dataset) {
-    dataset.sort(function(a, b) {return parseFloat(a.likes) - parseFloat(b.likes);});
-    dataset.reverse();
-    console.log(dataset)
+function showMostLiked(dataset,divZ) {
+    var datasetNow2 = dataset;
+    datasetNow2.sort(function(a, b) {return parseFloat(a.likes) - parseFloat(b.likes);});
+    datasetNow2.reverse();
+    //console.log(datasetNow2);
+    for(u=0;u<datasetNow2.length;u++) {
+        var fieldY = document.createElement('div');
+        fieldY.id = "contributorField2" + u;
+        fieldY.className = "listContainerEntry";
+        console.log(divZ);
+        document.getElementById(divZ).appendChild(fieldY);
+        document.getElementById("contributorField2"+u).innerHTML = datasetNow2[u].tweet + " (" + datasetNow2[u].handle + ") " + datasetNow2[u].likes;
+    }
 }
 
 function PersonWithMostRetweets(dataset) {
@@ -617,4 +668,40 @@ function personWithMostLikes(dataset) {
         likes[k].retweetRatio = Math.round(likes[k].allLikes/likes[k].numberOfTweets *100) / 100;
     }
     console.log(likes);
+}
+
+function personWithHighestTweets(dataset,div) {
+    var allTweets = [];
+    var alreadyPresent = 0;
+    for(i=0;i<dataset.length;i++) {
+        alreadyPresent = 0;
+        for(u=0;u<allTweets.length;u++) {
+            if(allTweets[u].handle === dataset[i].handle) {
+                alreadyPresent = 1;
+                allTweets[u].numberOfTweets = allTweets[u].numberOfTweets + 1;
+            }
+        }
+        if(alreadyPresent === 0) {
+            var tweeterObject = {
+                handle:dataset[i].handle,
+                allLikes:dataset[i].likes,
+                name:dataset[i].tweeter,
+                numberOfTweets:1,
+            }
+            allTweets.push(tweeterObject);
+        }
+    }
+    allTweets.sort(function(a, b) {return parseFloat(a.numberOfTweets) - parseFloat(b.numberOfTweets);});
+    allTweets.reverse();
+    for(k=0;k<allTweets.length;k++) {
+        allTweets[k].retweetRatio = Math.round(allTweets[k].allLikes/allTweets[k].numberOfTweets *100) / 100;
+    }
+    console.log(allTweets);
+    for(u=0;u<allTweets.length;u++) {
+        var fieldZ = document.createElement('div');
+        fieldZ.id = "contributorField1" + u;
+        fieldZ.className = "listContainerEntry";
+        document.getElementById(div).appendChild(fieldZ);
+        document.getElementById("contributorField1"+u).innerHTML = allTweets[u].name + " (" + allTweets[u].handle + ") " + allTweets[u].numberOfTweets;
+    }
 }
