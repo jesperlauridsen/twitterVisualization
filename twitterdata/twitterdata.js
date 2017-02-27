@@ -247,6 +247,7 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
 }
 
 function showEntireEventTweetProgress(dataset) {
+    //http://jsfiddle.net/9bMPD/1301/
     var presetColors= ["rgba(255, 0, 255, 0.5)","rgba(0, 0, 255, 0.5)","rgba(0, 255, 255, 0.5)","rgba(0, 128, 128, 0.5)","rgba(0, 255, 0, 0.5)","rgba(255, 255, 0, 0.5)","rgba(255, 0, 0, 0.5)","rgba(192, 192, 192, 0.5)","rgba(0, 0, 0, 0.5)","rgba(255,69,0, 0.5)"];
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
