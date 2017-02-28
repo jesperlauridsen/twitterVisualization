@@ -85,7 +85,7 @@ function generateSetup() {
     canvas.width = ((window.innerWidth/4)*3)-30;
     canvas.height = 300;
     canvas.style.zIndex = 8;
-    canvas.style.border = "1px solid";
+    //canvas.style.border = "1px solid";
     document.getElementById("canvasContainer").appendChild(canvas);
 }
 
@@ -275,7 +275,8 @@ function showEntireEventTweetProgress(dataset) {
             ctx.lineTo((singlePoint*y)+(u*difference),283);
             ctx.stroke();
             //if(y%2 == 0) {
-               ctx.font="7px Arial";
+               ctx.font="7px Trebuchet MS";
+               ctx.fillStyle="white";
                 if(y < 10) {
                     ctx.fillText(y,(singlePoint*y)+(u*difference)-3,290);
                 }
@@ -293,7 +294,7 @@ function showEntireEventTweetProgress(dataset) {
     ctx.moveTo(5,280);
     ctx.lineTo(canvas.width-5,280);
     ctx.stroke();
-    ctx.font="10px Arial";
+    ctx.font="10px Trebuchet MS";
     var monthToDisplay = startDateToText.getMonth() + 1;
     ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,0,295);
     startDateToText.setDate(startDateToText.getDate()+1);
@@ -304,7 +305,7 @@ function showEntireEventTweetProgress(dataset) {
         ctx.moveTo(Math.floor(y*difference),280);
         ctx.lineTo(Math.floor(y*difference),285);
         ctx.stroke();
-        ctx.font="10px Arial";
+        ctx.font="10px Trebuchet MS";
         ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,y*difference-10,295);
         startDateToText.setDate(startDateToText.getDate()+1);
         monthToDisplay = startDateToText.getMonth() + 1;
@@ -341,14 +342,16 @@ function showEntireEventTweetProgress(dataset) {
         }
 
     var highestHour = 0;
+    var totalNumberOfEntries = 0;
     for(n=0;n<hours.length;n++) {
         for(k=0;k<hours[n].length;k++) {
+            totalNumberOfEntries = totalNumberOfEntries + 1;
             if(hours[n][k] >= highestHour) {
                 highestHour = hours[n][k];
             }
         }
     }
-
+    console.log(totalNumberOfEntries + "antallet");
     hours.reverse();
     days.reverse();
     ctx.strokeStyle = "#000000";
@@ -364,9 +367,10 @@ function showEntireEventTweetProgress(dataset) {
     ctx.stroke();
     ctx.fillText(Math.floor(highestHour/2),10,141.5);
     console.log(hours);
+    var counterForColorForArc = 0;
     for(n=0;n<hours.length;n++) {
         ctx.fillStyle = presetColors[n];
-        ctx.font = "16px Arial";
+        ctx.font = "16px Trebuchet MS";
         for(k=0;k<hours[n].length;k++) {
             var heightZ;
             if(hours[n][k] === 0) {
@@ -377,17 +381,22 @@ function showEntireEventTweetProgress(dataset) {
             }
             var hour = k + 1;
             //console.log("day: " + n + " hour: " + hour + " number of tweets: " + hours[n][k] + " height: " + heightZ);
-            ctx.strokeStyle = presetColors[n];
-            ctx.fillStyle = presetColors[n];
+            var color1 = Math.round((255/totalNumberOfEntries)*counterForColorForArc);
+            var color2 = Math.round(255 - ((255/totalNumberOfEntries)*counterForColorForArc));
+            var colorForArc = "rgba(" + color1 + ", 127, " + color2 + " , 0.8)";
+            ctx.strokeStyle = colorForArc;
+            ctx.fillStyle = colorForArc;
             ctx.beginPath();
             //console.log(arrayOfDividers[k] + " " + heightZ + " " + hours[n][k]);
             ctx.arc((singlePoint*(k))+((n)*difference)+(singlePoint/2),heightZ,2,0,2*Math.PI);
             ctx.stroke();
             ctx.closePath();
             ctx.fill();
+            counterForColorForArc = counterForColorForArc + 1;
             //console.log("painting?");
         }
     }
+    var counterForColor = 0;
     for(n=0;n<hours.length;n++) {
         for(k=0;k<hours[n].length;k++) {
             var draw = 1;
@@ -405,7 +414,7 @@ function showEntireEventTweetProgress(dataset) {
             else if(hours[n][k+1] === undefined) {
                 try {
                 HX = 280 - ((hours[n+1][0] / highestHour) * 275);
-                console.log(hours[n+1][0] + " " + HX);
+                //console.log(hours[n+1][0] + " " + HX);
                 }
                 catch(err) {
                    draw = 0;
@@ -415,11 +424,17 @@ function showEntireEventTweetProgress(dataset) {
                 HX = 280 - ((hours[n][k+1] / highestHour) * 275);
             }
             if(draw === 1) {
-            ctx.strokeStyle = presetColors[n];
+            var color1 = Math.round((255/totalNumberOfEntries)*counterForColor);
+            var color2 = Math.round(255 - ((255/totalNumberOfEntries)*counterForColor));
+            var color = "rgba(" + color1 + ", 127, " + color2 + " , 1)";
+            //console.log(color + "heya");
+            ctx.strokeStyle = color;
+            //ctx.strokeStyle = presetColors[n];
             ctx.beginPath();
             ctx.moveTo((singlePoint*(k))+((n)*difference)+(singlePoint/2),HZ);
             ctx.lineTo((singlePoint*(k+1))+((n)*difference)+(singlePoint/2),HX);
             ctx.stroke();
+            counterForColor = counterForColor + 1;
             }
         }
     }

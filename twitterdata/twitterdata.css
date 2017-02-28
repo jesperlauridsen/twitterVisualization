@@ -1,5 +1,10 @@
+@font-face { font-family: Lato; src: url('Lato-Light.ttf');}
+
 body {
     overflow-x:hidden;
+    background: #666;
+    color:white;
+    font-family: "Lato","Trebuchet MS";
 }
 
 #intro p {
@@ -10,7 +15,7 @@ body {
 .listContainer {
     height:250px !important;
     width:32% !important;
-    background-color:cornflowerblue;
+    background-color:rgba(89,89,89,.25);
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
