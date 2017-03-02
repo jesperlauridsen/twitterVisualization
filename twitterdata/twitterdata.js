@@ -351,7 +351,6 @@ function showEntireEventTweetProgress(dataset) {
             }
         }
     }
-    console.log(totalNumberOfEntries + "antallet");
     hours.reverse();
     days.reverse();
     ctx.strokeStyle = "#000000";
@@ -383,7 +382,7 @@ function showEntireEventTweetProgress(dataset) {
             //console.log("day: " + n + " hour: " + hour + " number of tweets: " + hours[n][k] + " height: " + heightZ);
             var color1 = Math.round((255/totalNumberOfEntries)*counterForColorForArc);
             var color2 = Math.round(255 - ((255/totalNumberOfEntries)*counterForColorForArc));
-            var colorForArc = "rgba(" + color1 + ", 127, " + color2 + " , 0.8)";
+            var colorForArc = "rgba(" + color1 + ", 127, " + color2 + " , 0.4)";
             ctx.strokeStyle = colorForArc;
             ctx.fillStyle = colorForArc;
             ctx.beginPath();
