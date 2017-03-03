@@ -1,7 +1,7 @@
 var globalData;
 var dataInjected = 0;
 
-function showTwitterData() {
+function loadTwitterData() {
     var rawFile = new XMLHttpRequest();
     rawFile.open("GET", "finaltweeterdata-sorted2.csv", true);
     rawFile.onreadystatechange = function ()
@@ -33,20 +33,49 @@ function showTwitterData() {
                     }
                    arrayOfDataObjects.push(object);
                 }
-                //console.log(arrayOfDataObjects);
                 globalData = arrayOfDataObjects;
                 dataInjected = 1;
-                introductonToStatistics(globalData);
-                creatingTweetOverview(globalData);
-                showEntireEventTweetProgress(globalData);
-                personWithHighestTweets(globalData,"field");
-                showMostLiked(globalData,"field2");
-                showMostRetweeted(globalData,"field3");
-                //plotDataForAllDaysIn24HourInterval(globalData);
+                showFirstTwitterData();
             }
         }
     }
     rawFile.send(null);
+}
+
+function showFirstTwitterData() {
+    introductonToStatistics(globalData);
+    creatingTweetOverview(globalData);
+    showEntireEventTweetProgress(globalData);
+    personWithHighestTweets(globalData,"field");
+    showMostLiked(globalData,"field2");
+    showMostRetweeted(globalData,"field3");
+    findStartAndEndDate(globalData);
+    //plotDataForAllDaysIn24HourInterval(globalData);
+}
+
+function findStartAndEndDate(dataset) {
+    var startDate;
+    var endDate;
+    for(n=0;n<dataset.length;n++) {
+        if(n === 0) {
+            startDate = dataset[n];
+            endDate = dataset[n];
+        }
+        else {
+            if(dataset[n].realtime.getTime() < startDate.realtime.getTime()) {
+                startDate = dataset[n];
+            }
+            else {
+            }
+            if(dataset[n].realtime.getTime() > endDate.realtime.getTime()) {
+                endDate = dataset[n];
+            }
+            else {
+
+            }
+        }
+    }
+    console.log(startDate.realtime + " - " + endDate.realtime);
 }
 
 function generateSetup() {
@@ -501,7 +530,7 @@ function creatingTweetOverview(dataset) {
 //Display the overall layout of the tweeter-dataset.
 function introductonToStatistics(dataset) {
     if(dataInjected === 0) {
-       showTwitterData();
+       loadTwitterData();
     }
     generateSetup();
     //console.log(globalData);
@@ -601,12 +630,17 @@ function showMostRetweeted(dataset,divZ) {
     datasetNow.sort(function(a, b) {return parseFloat(a.retweets) - parseFloat(b.retweets);});
     datasetNow.reverse();
     console.log(datasetNow);
-    for(u=0;u<datasetNow.length;u++) {
+    for(h=0;h<datasetNow.length;h++) {
         var fieldX = document.createElement('div');
-        fieldX.id = "contributorField3" + u;
-        fieldX.className = "listContainerEntry";
+        fieldX.id = "contributorField3-" + h;
+        if(h % 2) {
+            fieldX.className = "listContainerEntry even";
+        }
+        else {
+            fieldX.className = "listContainerEntry unEven";
+        }
         document.getElementById(divZ).appendChild(fieldX);
-        document.getElementById("contributorField3"+u).innerHTML = datasetNow[u].tweet + " (" + datasetNow[u].handle + ") " + datasetNow[u].retweets;
+        document.getElementById("contributorField3-"+h).innerHTML = "<div><a href='" + datasetNow[h].link + "'>" +  datasetNow[h].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + datasetNow[h].handle.substring(1) + "'>" + datasetNow[h].handle + "</i>) - " + datasetNow[h].retweets + " retweets</div>";
     }
 }
 //List of most liked / procentage of all likes on the hashtag in that time interval.
@@ -615,13 +649,18 @@ function showMostLiked(dataset,divZ) {
     datasetNow2.sort(function(a, b) {return parseFloat(a.likes) - parseFloat(b.likes);});
     datasetNow2.reverse();
     //console.log(datasetNow2);
-    for(u=0;u<datasetNow2.length;u++) {
+    for(x=0;x<datasetNow2.length;x++) {
         var fieldY = document.createElement('div');
-        fieldY.id = "contributorField2" + u;
-        fieldY.className = "listContainerEntry";
+        fieldY.id = "contributorField2-" + x;
+        if(x % 2) {
+            fieldY.className = "listContainerEntry even";
+        }
+        else {
+            fieldY.className = "listContainerEntry unEven";
+        }
         console.log(divZ);
         document.getElementById(divZ).appendChild(fieldY);
-        document.getElementById("contributorField2"+u).innerHTML = datasetNow2[u].tweet + " (" + datasetNow2[u].handle + ") " + datasetNow2[u].likes;
+        document.getElementById("contributorField2-"+x).innerHTML = "<div><a href='" + datasetNow2[x].link + "'>" + datasetNow2[x].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + datasetNow2[x].handle.substring(1) + "'>" + datasetNow2[x].handle + "</i>) - " + datasetNow2[x].likes + " likes </div>";
     }
 }
 
@@ -714,9 +753,22 @@ function personWithHighestTweets(dataset,div) {
     console.log(allTweets);
     for(u=0;u<allTweets.length;u++) {
         var fieldZ = document.createElement('div');
-        fieldZ.id = "contributorField1" + u;
-        fieldZ.className = "listContainerEntry";
+        fieldZ.id = "contributorField1-" + u;
+        if(u % 2) {
+            fieldZ.className = "listContainerEntry even";
+        }
+        else {
+            fieldZ.className = "listContainerEntry unEven";
+        }
         document.getElementById(div).appendChild(fieldZ);
-        document.getElementById("contributorField1"+u).innerHTML = allTweets[u].name + " (" + allTweets[u].handle + ") " + allTweets[u].numberOfTweets;
+        document.getElementById("contributorField1-"+u).innerHTML = "<div class='tweeterName'>" + allTweets[u].name + " (<i><div class='handleOfUser'>" + allTweets[u].handle + "</div></i>) </div><div class='tweeterInfoOfName'>" + allTweets[u].numberOfTweets + " tweets </div>";
+        document.getElementById("contributorField1-"+u).onclick=function(){showPersonalStatistics(this.id);};
     }
+}
+
+function showPersonalStatistics(person) {
+    if(dataInjected === 0) {
+        loadTwitterData();
+    }
+    console.log(document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
 }

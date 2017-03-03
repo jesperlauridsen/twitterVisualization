@@ -15,6 +15,32 @@ body {
     margin-left:10px;
 }
 
+.unEven {
+    background-color:rgba(89,89,89,.80);
+    width:100%;
+}
+
+.even {
+    background-color:rgba(120,120,120,.80);
+    width:100%;
+}
+
+.tweetInfo {
+    margin-top:15px;
+}
+
+.tweeterName {
+    width:70%;
+    display:inline-block;
+}
+
+.tweeterInfoOfName {
+    display:inline-block;
+}
+
+.handleOfUser {
+    display:inline-block;
+}
 
 .listContainer {
     height:250px !important;
@@ -32,8 +58,13 @@ body {
 }
 
 .listContainerEntry {
-    margin-right:5px;
     padding:10px;
+    height:auto;
+}
+
+.listContainerEntry a {
+    text-decoration: none;
+    color:white;
 }
 
 .introContainer {
