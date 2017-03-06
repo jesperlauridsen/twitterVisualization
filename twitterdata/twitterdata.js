@@ -49,17 +49,14 @@ function showFirstTwitterData() {
     personWithHighestTweets(globalData,"field");
     showMostLiked(globalData,"field2");
     showMostRetweeted(globalData,"field3");
-    findStartAndEndDate(globalData);
     //plotDataForAllDaysIn24HourInterval(globalData);
 }
 
-function findStartAndEndDate(dataset) {
+function findStartDate(dataset) {
     var startDate;
-    var endDate;
     for(n=0;n<dataset.length;n++) {
         if(n === 0) {
             startDate = dataset[n];
-            endDate = dataset[n];
         }
         else {
             if(dataset[n].realtime.getTime() < startDate.realtime.getTime()) {
@@ -67,15 +64,28 @@ function findStartAndEndDate(dataset) {
             }
             else {
             }
+        }
+    }
+    console.log(" - " + startDate.realtime);
+    return startDate;
+}
+
+function findEndDate(dataset) {
+    var endDate;
+    for(n=0;n<dataset.length;n++) {
+        if(n === 0) {
+            endDate = dataset[n];
+        }
+        else {
             if(dataset[n].realtime.getTime() > endDate.realtime.getTime()) {
                 endDate = dataset[n];
             }
             else {
-
             }
         }
     }
-    console.log(startDate.realtime + " - " + endDate.realtime);
+    console.log(" - " + endDate.realtime);
+    return endDate;
 }
 
 function generateSetup() {
@@ -197,7 +207,6 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
             }
         }
     }
-
     hours.reverse();
     days.reverse();
     ctx.strokeStyle = "#000000";
@@ -218,7 +227,6 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
         //console.log(days[o][0].realtime.getDate());
         //ctx.fillText(days[o][0].realtime.getDate() + "/" + days[o][0].realtime.getMonth() + "-" +days[o][0].realtime.getFullYear(),canvas.width-150,10 +(o*10));
     }
-
     var arrayOfDividers = [];
     for(y=1;y<=24;y++) {
         seperateNumber = canvas.width/25 * y;
@@ -275,24 +283,23 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
     console.log(days);
 }
 
-function showEntireEventTweetProgress(dataset) {
-    //http://jsfiddle.net/9bMPD/1301/
+function showEntireEventTweetProgress(dataset,person) {
     var presetColors= ["rgba(255, 0, 255, 0.5)","rgba(0, 0, 255, 0.5)","rgba(0, 255, 255, 0.5)","rgba(0, 128, 128, 0.5)","rgba(0, 255, 0, 0.5)","rgba(255, 255, 0, 0.5)","rgba(255, 0, 0, 0.5)","rgba(192, 192, 192, 0.5)","rgba(0, 0, 0, 0.5)","rgba(255,69,0, 0.5)"];
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     document.getElementById("canvasHeadline").innerHTML = "All tweets in the dataset over the entire period of time.";
     sortedDataset = globalData.sort(function(a, b) {return parseFloat(a.realtime.getTime()) - parseFloat(b.realtime.getTime());});
     console.log("---");
-    var endDate = sortedDataset[0].realtime;
-    var startDate = sortedDataset[sortedDataset.length-1].realtime;
+    var endDate = findEndDate(dataset);
+    var startDate = findStartDate(dataset);
     var startDateToText = new Date();
     startDateToText.setTime(sortedDataset[0].realtime);
     console.log(sortedDataset);
     console.log(startDate);
     console.log(endDate);
     var oneDay = 24*60*60*1000;
-    var diffDays = Math.ceil(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
-    console.log(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
+    var diffDays = Math.ceil(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay)));
+    console.log(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay)));
     console.log(diffDays);
     var difference = canvas.width/diffDays;
     var singlePoint = (canvas.width/diffDays)/24;
@@ -470,7 +477,6 @@ function showEntireEventTweetProgress(dataset) {
 }
 
 function creatingTweetOverview(dataset) {
-
     var headlineContainer = document.createElement('div');
     headlineContainer.id = "headlineContainer";
     headlineContainer.className = "headlineContainer";
@@ -523,8 +529,6 @@ function creatingTweetOverview(dataset) {
     field3.style.marginTop = "50px";
     field3.className = "listContainer";
     document.body.appendChild(field3);
-
-
 }
 
 //Display the overall layout of the tweeter-dataset.
@@ -640,7 +644,7 @@ function showMostRetweeted(dataset,divZ) {
             fieldX.className = "listContainerEntry unEven";
         }
         document.getElementById(divZ).appendChild(fieldX);
-        document.getElementById("contributorField3-"+h).innerHTML = "<div><a href='" + datasetNow[h].link + "'>" +  datasetNow[h].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + datasetNow[h].handle.substring(1) + "'>" + datasetNow[h].handle + "</i>) - " + datasetNow[h].retweets + " retweets</div>";
+        document.getElementById("contributorField3-"+h).innerHTML = "<div><a href='" + datasetNow[h].link + "' target='_blank'>" +  datasetNow[h].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + datasetNow[h].handle.substring(1) + "'>" + datasetNow[h].handle + "</i>) - " + datasetNow[h].retweets + " retweets</div>";
     }
 }
 //List of most liked / procentage of all likes on the hashtag in that time interval.
@@ -660,7 +664,7 @@ function showMostLiked(dataset,divZ) {
         }
         console.log(divZ);
         document.getElementById(divZ).appendChild(fieldY);
-        document.getElementById("contributorField2-"+x).innerHTML = "<div><a href='" + datasetNow2[x].link + "'>" + datasetNow2[x].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + datasetNow2[x].handle.substring(1) + "'>" + datasetNow2[x].handle + "</i>) - " + datasetNow2[x].likes + " likes </div>";
+        document.getElementById("contributorField2-"+x).innerHTML = "<div><a href='" + datasetNow2[x].link + "' target='_blank'>" + datasetNow2[x].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + datasetNow2[x].handle.substring(1) + "'>" + datasetNow2[x].handle + "</i>) - " + datasetNow2[x].likes + " likes </div>";
     }
 }
 

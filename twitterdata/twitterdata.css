@@ -60,6 +60,7 @@ body {
 .listContainerEntry {
     padding:10px;
     height:auto;
+    cursor:pointer;
 }
 
 .listContainerEntry a {
