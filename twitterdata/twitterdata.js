@@ -66,7 +66,7 @@ function findStartDate(dataset) {
             }
         }
     }
-    console.log(" - " + startDate.realtime);
+    //console.log(" - " + startDate.realtime);
     return startDate;
 }
 
@@ -84,7 +84,7 @@ function findEndDate(dataset) {
             }
         }
     }
-    console.log(" - " + endDate.realtime);
+    //console.log(" - " + endDate.realtime);
     return endDate;
 }
 
@@ -766,13 +766,59 @@ function personWithHighestTweets(dataset,div) {
         }
         document.getElementById(div).appendChild(fieldZ);
         document.getElementById("contributorField1-"+u).innerHTML = "<div class='tweeterName'>" + allTweets[u].name + " (<i><div class='handleOfUser'>" + allTweets[u].handle + "</div></i>) </div><div class='tweeterInfoOfName'>" + allTweets[u].numberOfTweets + " tweets </div>";
-        document.getElementById("contributorField1-"+u).onclick=function(){showPersonalStatistics(this.id);};
+        document.getElementById("contributorField1-"+u).onclick=function(){showPersonalStatistics(dataset,this.id);};
     }
 }
 
-function showPersonalStatistics(person) {
-    if(dataInjected === 0) {
-        loadTwitterData();
+function showPersonalStatistics(dataset,person) {
+    var startDate = findStartDate(dataset);
+    var endDate = findEndDate(dataset);
+    var days = [];
+    var hours = [];
+    var existing = 0;
+    var nameOfTweeter = "";
+    for(n=0;n<dataset.length;n++) {
+        existing = 0;
+        for(y=0;y<days.length;y++) {
+            //console.log(dataset[n].handle + " ---- " + document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
+            if(dataset[n].realtime.getDate() === days[y][0].realtime.getDate() && dataset[n].realtime.getMonth() === days[y][0].realtime.getMonth() && dataset[n].realtime.getFullYear() === days[y][0].realtime.getFullYear()) {
+                if(dataset[n].handle === document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML) {
+                nameOfTweeter = dataset[n].tweeter;
+                existing = 1;
+                days[y].push(dataset[n]);
+                }
+            }
+        }
+        if(existing === 0) {
+            //console.log("NEW! " + dataset[n].realtime + " " + dataset[n].tweet + " " + dataset[n].datatime);
+            if(dataset[n].handle === document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML) {
+            days[days.length] = new Array();
+            days[days.length-1].push(dataset[n]);
+            }
+        }
     }
+    var oneDay = 24*60*60*1000;
+    var diffDays = Math.ceil(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay)));
+    for(u=0;u<diffDays;u++) {
+        hours[hours.length] = new Array();
+        for(h=0;h<24;h++) {
+            var value = 0;
+            hours[hours.length-1].push(value);
+        }
+    }
+    for(i=0;i<days.length;i++) {
+        for(h=0;h<days[i].length;h++) {
+                var day = Math.ceil(Math.abs((startDate.realtime.getTime() - days[i][h].realtime.getTime())/(oneDay))) - 1;
+                var hour = days[i][h].realtime.getHours();
+                //console.log(day + " ! " + days[i][h].realtime + " " + hour);
+                hours[day][hour] = hours[day][hour] + 1;
+        }
+    }
+    //DRAW HOURS PLXPLX
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    document.getElementById("canvasHeadline").innerHTML = "All tweets in the dataset by " + nameOfTweeter + " <i>(" + document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML + ")</i>" +  " over the entire period of time.";
+    ctx.clearRect(0,0,canvas.width,canvas.height);
     console.log(document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
+    console.log(hours);
 }
