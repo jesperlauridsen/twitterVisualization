@@ -85,3 +85,17 @@ body {
     display:inline-block;
     float:left;
 }
+
+.resetButton {
+    width:100%;
+    //margin-left:5%;
+    //margin-right:5%;
+    height:40px;
+    line-height:40px;
+    text-align: center;
+    background-color:dimgrey;
+    border:1px solid chocolate;
+    color:white;
+    cursor:pointer;
+
+}
