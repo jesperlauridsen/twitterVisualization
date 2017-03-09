@@ -43,7 +43,7 @@ function loadTwitterData() {
 }
 
 function showFirstTwitterData() {
-    introductonToStatistics(globalData);
+    introductonToStatistics(globalData,"DST4L");
     creatingTweetOverview(globalData);
     showEntireEventTweetProgress(globalData);
     personWithHighestTweets(globalData,"field");
@@ -542,7 +542,7 @@ function creatingTweetOverview(dataset) {
 }
 
 //Display the overall layout of the tweeter-dataset.
-function introductonToStatistics(dataset) {
+function introductonToStatistics(dataset,argument) {
     if(dataInjected === 0) {
        loadTwitterData();
     }
@@ -600,7 +600,7 @@ function introductonToStatistics(dataset) {
     }
     //console.log("Number of retweets " + retweets);
     //console.log("Number of authors " + " " + authors.length);
-    var text = "<h3>Breakdown of #DST4L</h3><p>This dataset contains tweets from <strong>" + diffDays + "</strong> days, the " + startDate.getDate() + "/" + startDate.getMonth() + "-" + startDate.getFullYear() + " to " + endDate.getDate() + "/" + endDate.getMonth() + "-" + endDate.getFullYear() + ", which was <strong>" + tweets + "</strong> tweets written by <strong>" + authors.length + "</strong> authors using the hashtag #DST4L. This means an average of <strong>" + tweets/diffDays + "</strong> tweets per day. There was a total of <strong>" + likes + "</strong> likes on these tweets, giving an average of <strong>" + (likes/tweets).toFixed(2) + "</strong> likes per tweet. There was <strong>" + retweets + "</strong> retweets on these tweets, giving an average of <strong>" + (retweets/tweets).toFixed(2) + "</strong> retweets per tweet.</p>";
+    var text = "<h3>Breakdown of #DST4L</h3><p>This dataset contains tweets from <strong>" + diffDays + "</strong> days, the " + startDate.getDate() + "/" + startDate.getMonth() + "-" + startDate.getFullYear() + " to " + endDate.getDate() + "/" + endDate.getMonth() + "-" + endDate.getFullYear() + ", which was <strong>" + tweets + "</strong> tweets written by <strong>" + authors.length + "</strong> authors using the hashtag #" + argument + ". This means an average of <strong>" + tweets/diffDays + "</strong> tweets per day. There was a total of <strong>" + likes + "</strong> likes on these tweets, giving an average of <strong>" + (likes/tweets).toFixed(2) + "</strong> likes per tweet. There was <strong>" + retweets + "</strong> retweets on these tweets, giving an average of <strong>" + (retweets/tweets).toFixed(2) + "</strong> retweets per tweet.</p>";
     document.getElementById("intro").innerHTML += text;
 
     var resetButton = document.createElement('div');
@@ -815,8 +815,8 @@ function showPersonalStatistics(dataset,person) {
         }
     }
     var oneDay = 24*60*60*1000;
-    console.log("here!");
-    console.log(startDate.realtime);
+    //console.log("here!");
+    //console.log(startDate.realtime);
     var diffDays = Math.ceil(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay)));
     for(u=0;u<diffDays;u++) {
         hours[hours.length] = new Array();
@@ -987,6 +987,35 @@ function showPersonalStatistics(dataset,person) {
             }
         }
     }
+    mostPersonalLikedTweets(globalData,document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML,"field2");
     //console.log(document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
     //console.log(hours);
 }
+
+function mostPersonalLikedTweets(dataset, handle,div) {
+    document.getElementById("field2").innerHTML = "";
+    var tweets = [];
+    for(i=0;i<dataset.length;i++) {
+        if(dataset[i].handle === handle) {
+            tweets.push(dataset[i]);
+        }
+    }
+    tweets.sort(function(a, b) {return parseFloat(a.likes) - parseFloat(b.likes);});
+    tweets.reverse();
+    console.log(tweets);
+    for(u=0;u<tweets.length;u++) {
+        var fieldZ = document.createElement('div');
+        fieldZ.id = "contributorField2-" + u;
+        if(u % 2) {
+            fieldZ.className = "listContainerEntry even";
+        }
+        else {
+            fieldZ.className = "listContainerEntry unEven";
+        }
+        document.getElementById(div).appendChild(fieldZ);
+        //console.log(tweets[u].tweet + " " + tweets[u].likes + "<br/> ----");
+        document.getElementById("contributorField2-"+u).innerHTML = "<div><a href='" + tweets[u].link + "' target='_blank'>" + tweets[u].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + tweets[u].handle.substring(1) + "'>" + tweets[u].handle + "</i>) - " + tweets[u].likes + " likes </div>";
+    }
+}
+
+function mostPersonalRetweetedTweets(dataset, handle) {}
