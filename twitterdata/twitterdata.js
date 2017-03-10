@@ -988,12 +988,13 @@ function showPersonalStatistics(dataset,person) {
         }
     }
     mostPersonalLikedTweets(globalData,document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML,"field2");
+    mostPersonalRetweetedTweets(globalData,document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML,"field3");
     //console.log(document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
     //console.log(hours);
 }
 
 function mostPersonalLikedTweets(dataset, handle,div) {
-    document.getElementById("field2").innerHTML = "";
+    document.getElementById(div).innerHTML = "";
     var tweets = [];
     for(i=0;i<dataset.length;i++) {
         if(dataset[i].handle === handle) {
@@ -1018,4 +1019,28 @@ function mostPersonalLikedTweets(dataset, handle,div) {
     }
 }
 
-function mostPersonalRetweetedTweets(dataset, handle) {}
+function mostPersonalRetweetedTweets(dataset, handle, div) {
+    document.getElementById(div).innerHTML = "";
+    var tweets = [];
+    for(i=0;i<dataset.length;i++) {
+        if(dataset[i].handle === handle) {
+            tweets.push(dataset[i]);
+        }
+    }
+    tweets.sort(function(a, b) {return parseFloat(a.retweets) - parseFloat(b.retweets);});
+    tweets.reverse();
+    console.log(tweets);
+    for(u=0;u<tweets.length;u++) {
+        var fieldZ = document.createElement('div');
+        fieldZ.id = "contributorField3-" + u;
+        if(u % 2) {
+            fieldZ.className = "listContainerEntry even";
+        }
+        else {
+            fieldZ.className = "listContainerEntry unEven";
+        }
+        document.getElementById(div).appendChild(fieldZ);
+        //console.log(tweets[u].tweet + " " + tweets[u].likes + "<br/> ----");
+        document.getElementById("contributorField3-"+u).innerHTML = "<div><a href='" + tweets[u].link + "' target='_blank'>" + tweets[u].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + tweets[u].handle.substring(1) + "'>" + tweets[u].handle + "</i>) - " + tweets[u].retweets + " retweets </div>";
+    }
+}
