@@ -43,6 +43,7 @@ function loadTwitterData() {
 }
 
 function showFirstTwitterData() {
+    sanatizeData(globalData);
     introductonToStatistics(globalData,"DST4L");
     creatingTweetOverview(globalData);
     showEntireEventTweetProgress(globalData);
@@ -50,6 +51,7 @@ function showFirstTwitterData() {
     showMostLiked(globalData,"field2");
     showMostRetweeted(globalData,"field3");
     sortDatasetAfterDate(globalData);
+    personalOutwardRelations(globalData,"@knanton");
     //plotDataForAllDaysIn24HourInterval(globalData);
 }
 
@@ -294,7 +296,7 @@ function showEntireEventTweetProgress(dataset,person) {
     //console.log(endDate);
     var daysBetween = 0;
     for(u=0;u<1;) {
-        console.log(calDate + " " + endDate.realtime + "    .....");
+        //console.log(calDate + " " + endDate.realtime + "    .....");
         if(calDate.getFullYear() <= endDate.realtime.getFullYear() && calDate.getMonth() <= endDate.realtime.getMonth() && calDate.getDate() <= endDate.realtime.getDate()) {
             daysBetween = daysBetween + 1;
         }
@@ -303,7 +305,7 @@ function showEntireEventTweetProgress(dataset,person) {
         }
         calDate.setDate(calDate.getDate() + 1);
     }
-    console.log(daysBetween + " bitch.");
+    //console.log(daysBetween + " bitch.");
     //var oneDay = 24*60*60*1000;
     var diffDays = daysBetween;
     //var diffDays = Math.round(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay)));
@@ -1042,5 +1044,61 @@ function mostPersonalRetweetedTweets(dataset, handle, div) {
         document.getElementById(div).appendChild(fieldZ);
         //console.log(tweets[u].tweet + " " + tweets[u].likes + "<br/> ----");
         document.getElementById("contributorField3-"+u).innerHTML = "<div><a href='" + tweets[u].link + "' target='_blank'>" + tweets[u].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + tweets[u].handle.substring(1) + "'>" + tweets[u].handle + "</i>) - " + tweets[u].retweets + " retweets </div>";
+    }
+}
+
+function sanatizeData(dataset) {
+    for(i=0;i<dataset.length;i++) {
+        if(dataset[i].tweet.indexOf("pic.twitter.com") != -1) {
+            //console.log(dataset[i].tweet.indexOf("pic.twitter.com"));
+            //console.log(dataset[i].tweet);
+            if(dataset[i].tweet.charAt(dataset[i].tweet.indexOf("pic.twitter.com")-1) != " ") {
+                dataset[i].tweet = [dataset[i].tweet.slice(0, dataset[i].tweet.indexOf("pic.twitter.com")), " ", dataset[i].tweet.slice(dataset[i].tweet.indexOf("pic.twitter.com"))].join('');
+                //console.log("New: " + dataset[i].tweet);
+            }
+        }
+        if(dataset[i].tweet.indexOf("http://") != -1) {
+            if(dataset[i].tweet.charAt(dataset[i].tweet.indexOf("http://")-1) != " ") {
+                dataset[i].tweet = [dataset[i].tweet.slice(0, dataset[i].tweet.indexOf("http://")), " ", dataset[i].tweet.slice(dataset[i].tweet.indexOf("http://"))].join('');
+                //console.log("New: " + dataset[i].tweet);
+            }
+        }
+        if(dataset[i].tweet.indexOf("https://") != -1) {
+            if(dataset[i].tweet.charAt(dataset[i].tweet.indexOf("https://")-1) != " ") {
+                dataset[i].tweet = [dataset[i].tweet.slice(0, dataset[i].tweet.indexOf("https://")), " ", dataset[i].tweet.slice(dataset[i].tweet.indexOf("https://"))].join('');
+                console.log("New: " + dataset[i].tweet);
+            }
+        }
+    }
+}
+
+function personalOutwardRelations(dataset,person) {
+    var tweetArray = [];
+    for(h=0;h<dataset.length;h++) {
+        if(dataset[h].handle === person) {
+            tweetArray.push(dataset[h]);
+        }
+    }
+    for(j=0;j<tweetArray.length;j++) {
+        //console.log(tweetArray[j].tweet);
+        var counter = (tweetArray[j].tweet.match(/@/g)||[]).length;
+        var lastIndex = 0;
+        var name;
+        for(f=0;f<counter;f++) {
+            name = "";
+            name = tweetArray[j].tweet.substr(tweetArray[j].tweet.indexOf("@",lastIndex),tweetArray[j].tweet.indexOf(" ",tweetArray[j].tweet.indexOf("@",lastIndex)+1)-tweetArray[j].tweet.indexOf("@",lastIndex));
+            if(name === "" && tweetArray[j].tweet.indexOf(" ",tweetArray[j].tweet.indexOf("@",lastIndex)+1) === -1) {
+                name = tweetArray[j].tweet.substr(tweetArray[j].tweet.indexOf("@",lastIndex),tweetArray[j].tweet.indexOf(" ",(tweetArray[j].tweet.length-1)-tweetArray[j].tweet.indexOf("@",lastIndex)));
+            }
+            if(name.charAt(name.length -1) === "." || name.charAt(name.length -1) === "!" || name.charAt(name.length -1) === "?" || name.charAt(name.length -1) === ",") {
+                name = name.slice(0, -1);
+            }
+            if(name.substr(name.length - 2,2) === "’s") {
+                name = name.slice(0,-2);
+            }
+            console.log(f + " at: " + tweetArray[j].tweet.indexOf("@",lastIndex) + " to " + tweetArray[j].tweet.indexOf(" ",tweetArray[j].tweet.indexOf("@",lastIndex)+1) + " name: " + name);
+            lastIndex = tweetArray[j].tweet.indexOf("@",lastIndex) + 1;
+        }
+        //console.log(counter);
     }
 }
