@@ -1072,6 +1072,22 @@ function sanatizeData(dataset) {
     }
 }
 
+//  Fix %-wheel with procent of tweets that was liked.
+function likesOnTweets(dataset,person) {
+
+}
+
+
+// Fix %-wheel with procent of tweets that was retweeted.
+function retweetsOfTweets() {
+
+}
+
+// Fix %-wheel with procent of tweets had engagement with other users.
+function engangementInTweets(dataset, person) {
+
+}
+
 function personalOutwardRelations(dataset,person) {
     var tweetArray = [];
     for(h=0;h<dataset.length;h++) {
