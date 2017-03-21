@@ -489,10 +489,16 @@ function showEntireEventTweetProgress(dataset,person) {
 }
 
 function creatingTweetOverview(dataset) {
+    var overallContainerForLists = document.createElement('div');
+    overallContainerForLists.id = "overallContainerForLists";
+    overallContainerForLists.className = "overallContainerForLists";
+    document.body.appendChild(overallContainerForLists);
+
+
     var headlineContainer = document.createElement('div');
     headlineContainer.id = "headlineContainer";
     headlineContainer.className = "headlineContainer";
-    document.body.appendChild(headlineContainer);
+    document.getElementById("overallContainerForLists").appendChild(headlineContainer);
 
     var headline = document.createElement('div');
     headline.id = "headline1";
@@ -520,7 +526,7 @@ function creatingTweetOverview(dataset) {
     field.style.float = "left";
     field.style.marginTop = "50px";
     field.className = "listContainer";
-    document.body.appendChild(field);
+    document.getElementById("overallContainerForLists").appendChild(field);
 
     var field2 = document.createElement('div');
     field2.id = "field2";
@@ -530,7 +536,7 @@ function creatingTweetOverview(dataset) {
     field2.style.float = "left";
     field2.style.marginTop = "50px";
     field2.className = "listContainer";
-    document.body.appendChild(field2);
+    document.getElementById("overallContainerForLists").appendChild(field2);
 
     var field3 = document.createElement('div');
     field3.id = "field3";
@@ -540,7 +546,16 @@ function creatingTweetOverview(dataset) {
     field3.style.float = "left";
     field3.style.marginTop = "50px";
     field3.className = "listContainer";
-    document.body.appendChild(field3);
+    document.getElementById("overallContainerForLists").appendChild(field3);
+}
+
+function createFinalPersonalVisualization() {
+    var personalVisualization = document.createElement('div');
+    personalVisualization.id = "personalVisualization";
+    personalVisualization.className = "personalVisualizationContainer";
+    //document.body.appendChild(personalVisualization);
+    //document.getElementsByClassName("introContainer")[0].parentNode.appendChild(personalVisualization);
+    document.getElementsByClassName("overallContainerForLists")[0].insertBefore(personalVisualization, document.getElementsByClassName("overallContainerForLists")[0].children[0]);
 }
 
 //Display the overall layout of the tweeter-dataset.
@@ -604,18 +619,19 @@ function introductonToStatistics(dataset,argument) {
     //console.log("Number of authors " + " " + authors.length);
     var text = "<h3>Breakdown of #DST4L</h3><p>This dataset contains tweets from <strong>" + diffDays + "</strong> days, the " + startDate.getDate() + "/" + startDate.getMonth() + "-" + startDate.getFullYear() + " to " + endDate.getDate() + "/" + endDate.getMonth() + "-" + endDate.getFullYear() + ", which was <strong>" + tweets + "</strong> tweets written by <strong>" + authors.length + "</strong> authors using the hashtag #" + argument + ". This means an average of <strong>" + tweets/diffDays + "</strong> tweets per day. There was a total of <strong>" + likes + "</strong> likes on these tweets, giving an average of <strong>" + (likes/tweets).toFixed(2) + "</strong> likes per tweet. There was <strong>" + retweets + "</strong> retweets on these tweets, giving an average of <strong>" + (retweets/tweets).toFixed(2) + "</strong> retweets per tweet.</p>";
     document.getElementById("intro").innerHTML += text;
-
-    var resetButton = document.createElement('div');
-    resetButton.id = "resetButton";
-    resetButton.className = "resetButton";
-    document.getElementById("intro").appendChild(resetButton);
-    document.getElementById("resetButton").innerHTML = "Reload overall statistics";
-    document.getElementById("resetButton").onclick=function(){reshowFirstTwitterData();};
+    addResetButton();
 }
 
 
 //Show Number of tweets, number of likes all over, number of tweeters, mosts tweets in what hour, etc.
-function showOverallStatistics(dataset) {
+function showOverallStatisticsForPerson(dataset, person) {
+    var numberOfTweets = 0;
+    var averageNumberOfTweets = 0;
+    var numberOfLikes = 0;
+    var numberOfRetweets = 0;
+    var text = "<h3>Breakdown of " + person.handle + "</h3><p>User tweeted + " + numberOfTweets + " times during the entire measured period, which averages as " + averageNumberOfTweets + " tweets per day. These tweets recieved " + numberOfLikes + " likes, which averages " + (numberOfLikes/numberOfTweets).toFixed(2) + " likes per tweet, and " + numberOfRetweets + " retweets, which averages " + (numberOfRetweets/numberOfTweets).toFixed(2) + " retweets per tweet.</p>";
+    document.getElementById("intro").innerHTML += text;
+    addResetButton();
 }
 //List of contributers / procentage of tweets from every single contributor.
 function showAllContributors(dataset) {
@@ -991,6 +1007,7 @@ function showPersonalStatistics(dataset,person) {
     }
     mostPersonalLikedTweets(globalData,document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML,"field2");
     mostPersonalRetweetedTweets(globalData,document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML,"field3");
+    createFinalPersonalVisualization();
     //console.log(document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
     //console.log(hours);
 }
@@ -1075,6 +1092,19 @@ function sanatizeData(dataset) {
 //  Fix %-wheel with procent of tweets that was liked.
 function likesOnTweets(dataset,person) {
 
+}
+
+function addResetButton() {
+    var resetButton = document.createElement('div');
+    resetButton.id = "resetButton";
+    resetButton.className = "resetButton";
+    document.getElementById("intro").appendChild(resetButton);
+    document.getElementById("resetButton").innerHTML = "Reload overall statistics";
+    document.getElementById("resetButton").onclick=function(){reshowFirstTwitterData();removePersonalStatistics();};
+}
+
+function removePersonalStatistics() {
+   document.getElementById("personalVisualization").parentNode.removeChild(document.getElementById("personalVisualization"));
 }
 
 

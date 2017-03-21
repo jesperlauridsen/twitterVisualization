@@ -38,6 +38,18 @@ body {
     display:inline-block;
 }
 
+#overallContainerForLists {
+    width:100%;
+    height:auto;
+    min-height:320px;
+}
+
+.personalVisualizationContainer{
+    width:100%;
+    height:500px;
+    background-color:yellow;
+}
+
 .handleOfUser {
     display:inline-block;
 }
