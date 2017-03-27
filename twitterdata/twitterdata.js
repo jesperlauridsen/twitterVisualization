@@ -1089,11 +1089,6 @@ function sanatizeData(dataset) {
     }
 }
 
-//  Fix %-wheel with procent of tweets that was liked.
-function likesOnTweets(dataset,person) {
-
-}
-
 function addResetButton() {
     var resetButton = document.createElement('div');
     resetButton.id = "resetButton";
@@ -1107,15 +1102,72 @@ function removePersonalStatistics() {
    document.getElementById("personalVisualization").parentNode.removeChild(document.getElementById("personalVisualization"));
 }
 
+//  Fix %-wheel with procent of tweets that was liked.
+function likesOnTweets(dataset,person) {
+
+}
 
 // Fix %-wheel with procent of tweets that was retweeted.
-function retweetsOfTweets() {
+function retweetsOfTweets(dataset, person) {
 
 }
 
 // Fix %-wheel with procent of tweets had engagement with other users.
 function engangementInTweets(dataset, person) {
 
+}
+
+// Fix %-wheel number of tweets from person of entire dataset.
+function tweetsOfEntireSet(dataset,person) {
+
+}
+
+// Simple function to create the wheel
+function createDiagram(div,id,info,procent,color1,color2,size) {
+	var canvasForProcentages = document.createElement('canvas');
+  canvasForProcentages.id = "canvasForProcentages" + id;
+  canvasForProcentages.className = "canvasForProcentages";
+  canvasForProcentages.width = size;
+  canvasForProcentages.height = size;
+  document.getElementById(div).appendChild(canvasForProcentages);
+  var canvasForProcentagesCtx = canvasForProcentages.getContext("2d");
+	var lastend = 0;
+	var data = [procent,100-procent]; // If you add more data values make sure you add more colors
+	var myTotal = 0; // Automatically calculated so don't touch
+	var myColor = [color1,color2]; // Colors of each slice
+
+	for (var e = 0; e < data.length; e++) {
+ 	 myTotal += data[e];
+	}
+
+	for (var i = 0; i < data.length; i++) {
+ 	 	canvasForProcentagesCtx.fillStyle = myColor[i];
+  	canvasForProcentagesCtx.beginPath();
+ 	 	canvasForProcentagesCtx.moveTo(canvasForProcentages.width / 2, canvasForProcentages.height / 2);
+ 			 // Arc Parameters: x, y, radius, startingAngle (radians), endingAngle (radians), antiClockwise (boolean)
+       console.log(canvasForProcentages.height);
+  	canvasForProcentagesCtx.arc(canvasForProcentages.width / 2, canvasForProcentages.height / 2, canvasForProcentages.height / 2, lastend, lastend + 		(Math.PI * 2 * (data[i] / myTotal)), false);
+  	canvasForProcentagesCtx.lineTo(canvasForProcentages.width / 2, canvasForProcentages.height / 2);
+  	canvasForProcentagesCtx.fill();
+  	lastend += Math.PI * 2 * (data[i] / myTotal);
+	}
+	canvasForProcentagesCtx.fillStyle = "#FFFFFF";
+	canvasForProcentagesCtx.beginPath();
+	canvasForProcentagesCtx.moveTo(canvasForProcentages.width / 2, canvasForProcentages.height / 2);
+	canvasForProcentagesCtx.arc(canvasForProcentages.width / 2,canvasForProcentages.height / 2,(canvasForProcentages.height / 2)-(canvasForProcentages.height / 10),0,2*Math.PI);
+	canvasForProcentagesCtx.fill();
+  var infoDiv = document.createElement('div');
+  infoDiv.id = "info" + id;
+  infoDiv.className = "infoDivForPie";
+  infoDiv.style.width = size + "px";
+  infoDiv.style.height = size + "px";
+  infoDiv.style.marginTop = -size - 4 + "px";
+  infoDiv.style.lineHeight = size + "px";
+  infoDiv.style.textAlign = "center";
+  infoDiv.style.fontSize = size/3.5 + "px";
+  infoDiv.style.color = color1;
+  document.getElementById(div).appendChild(infoDiv);
+  document.getElementById("info" + id).innerHTML = procent + "%";
 }
 
 function personalOutwardRelations(dataset,person) {
