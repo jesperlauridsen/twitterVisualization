@@ -806,6 +806,7 @@ function personWithHighestTweets(dataset,div) {
 }
 
 function showPersonalStatistics(dataset,person) {
+    removePersonalStatistics();
     var startDate = sortDatasetAfterDate(dataset,0);
     var endDate = sortDatasetAfterDate(dataset,1);
     var days = [];
@@ -1099,8 +1100,14 @@ function addResetButton() {
 }
 
 function removePersonalStatistics() {
+    if(!document.getElementById("personalVisualization")) {
+    }
+    else {
    document.getElementById("personalVisualization").parentNode.removeChild(document.getElementById("personalVisualization"));
+    }
 }
+
+//https://jsfiddle.net/m96zt8mb/ - skal bruges til at smække opsætningen op.
 
 //  Fix %-wheel with procent of tweets that was liked.
 function likesOnTweets(dataset,person) {
