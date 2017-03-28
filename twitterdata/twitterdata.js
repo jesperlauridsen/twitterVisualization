@@ -549,13 +549,14 @@ function creatingTweetOverview(dataset) {
     document.getElementById("overallContainerForLists").appendChild(field3);
 }
 
-function createFinalPersonalVisualization() {
+function createFinalPersonalVisualization(person) {
     var personalVisualization = document.createElement('div');
     personalVisualization.id = "personalVisualization";
     personalVisualization.className = "personalVisualizationContainer";
     //document.body.appendChild(personalVisualization);
     //document.getElementsByClassName("introContainer")[0].parentNode.appendChild(personalVisualization);
     document.getElementsByClassName("overallContainerForLists")[0].insertBefore(personalVisualization, document.getElementsByClassName("overallContainerForLists")[0].children[0]);
+    createEntirePersonalRelationsFrame("personalVisualization",person);
 }
 
 //Display the overall layout of the tweeter-dataset.
@@ -1008,7 +1009,7 @@ function showPersonalStatistics(dataset,person) {
     }
     mostPersonalLikedTweets(globalData,document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML,"field2");
     mostPersonalRetweetedTweets(globalData,document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML,"field3");
-    createFinalPersonalVisualization();
+    createFinalPersonalVisualization(document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
     //console.log(document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
     //console.log(hours);
 }
@@ -1107,31 +1108,104 @@ function removePersonalStatistics() {
     }
 }
 
+function createEntirePersonalRelationsFrame(div,person) {
+    var wheelContainer = document.createElement('div');
+    wheelContainer.id = "wheelContainer";
+    wheelContainer.className = "wheelContainer";
+    document.getElementById(div).appendChild(wheelContainer);
+    for(y=0;y<4;y++) {
+        var wheelContainer = document.createElement('div');
+        wheelContainer.id = "wheelContainerForSingleWheel" + y;
+        wheelContainer.className = "wheelContainerForSingleWheel";
+        document.getElementById("wheelContainer").appendChild(wheelContainer);
+    }
+    var personalRelationsContainer = document.createElement('div');
+    personalRelationsContainer.id = "personalRelationsContainer";
+    personalRelationsContainer.className = "personalRelationsContainer";
+    document.getElementById(div).appendChild(personalRelationsContainer);
+    likesOnTweets(globalData,person,"wheelContainerForSingleWheel0");
+    retweetsOfTweets(globalData,person,"wheelContainerForSingleWheel1");
+    engangementInTweets(globalData,person,"wheelContainerForSingleWheel2");
+    tweetsOfEntireSet(globalData,person,"wheelContainerForSingleWheel3");
+}
+
 //https://jsfiddle.net/m96zt8mb/ - skal bruges til at smække opsætningen op.
 
 //  Fix %-wheel with procent of tweets that was liked.
-function likesOnTweets(dataset,person) {
-
+function likesOnTweets(dataset,person,div) {
+    var tweets = 0;
+    var likes = 0;
+    var result = 0;
+    for(i=0;i<dataset.length;i++) {
+        if(dataset[i].likes != 0 && dataset[i].handle === person) {
+            likes = likes + 1;
+            tweets = tweets + 1;
+        }
+        else if(dataset[i].likes === 0 && dataset[i].handle === person) {
+            tweets = tweets + 1;
+        }
+    }
+    result = likes/tweets * 100;
+    //console.log(likes  + " - " + tweets);
+    createDiagram(div,0,"The procentage of tweets that was liked at least once:", result,"orange","grey",document.getElementById(div).clientHeight/2);
 }
 
 // Fix %-wheel with procent of tweets that was retweeted.
-function retweetsOfTweets(dataset, person) {
-
+function retweetsOfTweets(dataset,person,div) {
+    var tweets = 0;
+    var retweets = 0;
+    var result = 0;
+    for(i=0;i<dataset.length;i++) {
+        if(dataset[i].retweets != 0 && dataset[i].handle === person) {
+            retweets = retweets + 1;
+            tweets = tweets + 1;
+        }
+        else if(dataset[i].retweets === 0 && dataset[i].handle === person) {
+            tweets = tweets + 1;
+        }
+    }
+    result = retweets/tweets * 100;
+    //console.log(retweets  + " - " + tweets);
+    createDiagram(div,1,"The procentage of tweets that was retweeted at least once:", result,"orange","grey",document.getElementById(div).clientHeight/2);
 }
 
 // Fix %-wheel with procent of tweets had engagement with other users.
-function engangementInTweets(dataset, person) {
-
+function engangementInTweets(dataset,person,div) {
+    var tweets = 0;
+    var tweetsWithUsers = 0;
+    var result = 0;
+    for(i=0;i<dataset.length;i++) {
+        if(dataset[i].handle === person && dataset[i].tweet.indexOf("@") != -1 && dataset[i].tweet.charAt(dataset[i].tweet.indexOf("@")+1) != " ") {
+            tweetsWithUsers = tweetsWithUsers + 1;
+            tweets = tweets + 1;
+        }
+        else if(dataset[i].handle === person) {
+            tweets = tweets + 1;
+        }
+    }
+    result = tweetsWithUsers/tweets * 100;
+    //console.log(retweets  + " - " + tweets);
+    createDiagram(div,2,"The procentage of tweets that had other users tagged in them:", result,"orange","grey",document.getElementById(div).clientHeight/2);
 }
 
 // Fix %-wheel number of tweets from person of entire dataset.
-function tweetsOfEntireSet(dataset,person) {
-
+function tweetsOfEntireSet(dataset,person,div) {
+    var tweets = 0;
+    for(i=0;i<dataset.length;i++) {
+        if(dataset[i].handle === person) {
+            tweets = tweets + 1;
+        }
+    }
+    result = tweets/dataset.length * 100;
+    //console.log(retweets  + " - " + tweets);
+    createDiagram(div,3,"The procentage of tweets made from " + person + " from the entire dataset:", result,"orange","grey",document.getElementById(div).clientHeight/2);
 }
 
 // Simple function to create the wheel
 function createDiagram(div,id,info,procent,color1,color2,size) {
-	var canvasForProcentages = document.createElement('canvas');
+  procent = parseFloat(procent.toFixed(1));
+  document.getElementById(div).innerHTML = "<p>" + info + "</p>";
+  var canvasForProcentages = document.createElement('canvas');
   canvasForProcentages.id = "canvasForProcentages" + id;
   canvasForProcentages.className = "canvasForProcentages";
   canvasForProcentages.width = size;
@@ -1152,13 +1226,12 @@ function createDiagram(div,id,info,procent,color1,color2,size) {
   	canvasForProcentagesCtx.beginPath();
  	 	canvasForProcentagesCtx.moveTo(canvasForProcentages.width / 2, canvasForProcentages.height / 2);
  			 // Arc Parameters: x, y, radius, startingAngle (radians), endingAngle (radians), antiClockwise (boolean)
-       console.log(canvasForProcentages.height);
   	canvasForProcentagesCtx.arc(canvasForProcentages.width / 2, canvasForProcentages.height / 2, canvasForProcentages.height / 2, lastend, lastend + 		(Math.PI * 2 * (data[i] / myTotal)), false);
   	canvasForProcentagesCtx.lineTo(canvasForProcentages.width / 2, canvasForProcentages.height / 2);
   	canvasForProcentagesCtx.fill();
   	lastend += Math.PI * 2 * (data[i] / myTotal);
 	}
-	canvasForProcentagesCtx.fillStyle = "#FFFFFF";
+	canvasForProcentagesCtx.fillStyle = "#666";
 	canvasForProcentagesCtx.beginPath();
 	canvasForProcentagesCtx.moveTo(canvasForProcentages.width / 2, canvasForProcentages.height / 2);
 	canvasForProcentagesCtx.arc(canvasForProcentages.width / 2,canvasForProcentages.height / 2,(canvasForProcentages.height / 2)-(canvasForProcentages.height / 10),0,2*Math.PI);

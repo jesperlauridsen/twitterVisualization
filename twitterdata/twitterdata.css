@@ -74,11 +74,21 @@ body {
   -o-transform: rotate(-90deg);
   -ms-transform: rotate(-90deg);
   transform: rotate(-90deg);
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+#personalVisualization h3 {
+    margin-top:0px;
 }
 
 .infoDivForPie {
   position:relative;
   opacity:0.5;
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 .listContainerEntry {
@@ -117,9 +127,26 @@ body {
     height:40px;
     line-height:40px;
     text-align: center;
-    background-color:dimgrey;
-    border:1px solid chocolate;
+    background-color:#444;
+    border:1px solid white;
     color:white;
     cursor:pointer;
+}
 
+.wheelContainer {
+    height:100%;
+    width:50%;
+    float:left;
+}
+
+.personalRelationsContainer {
+    width:50%;
+    height:100%;
+    float:right;
+}
+
+.wheelContainerForSingleWheel {
+    width:50%;
+    height:50%;
+    float:left;
 }
