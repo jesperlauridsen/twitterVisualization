@@ -680,7 +680,7 @@ function showMostRetweeted(dataset,divZ) {
             fieldX.className = "listContainerEntry unEven";
         }
         document.getElementById(divZ).appendChild(fieldX);
-        document.getElementById("contributorField3-"+h).innerHTML = "<div><a href='" + datasetNow[h].link + "' target='_blank'>" +  datasetNow[h].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + datasetNow[h].handle.substring(1) + "'>" + datasetNow[h].handle + "</i>) - " + datasetNow[h].retweets + " retweets</div>";
+        document.getElementById("contributorField3-"+h).innerHTML = "<div class='fullTweet'><a href='" + datasetNow[h].link + "' target='_blank'>" +  datasetNow[h].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + datasetNow[h].handle.substring(1) + "'>" + datasetNow[h].handle + "</i>) - " + datasetNow[h].retweets + " retweets</div>";
     }
 }
 //List of most liked / procentage of all likes on the hashtag in that time interval.
@@ -700,7 +700,7 @@ function showMostLiked(dataset,divZ) {
         }
         //console.log(divZ);
         document.getElementById(divZ).appendChild(fieldY);
-        document.getElementById("contributorField2-"+x).innerHTML = "<div><a href='" + datasetNow2[x].link + "' target='_blank'>" + datasetNow2[x].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + datasetNow2[x].handle.substring(1) + "'>" + datasetNow2[x].handle + "</i>) - " + datasetNow2[x].likes + " likes </div>";
+        document.getElementById("contributorField2-"+x).innerHTML = "<div class='fullTweet'><a href='" + datasetNow2[x].link + "' target='_blank'>" + datasetNow2[x].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + datasetNow2[x].handle.substring(1) + "'>" + datasetNow2[x].handle + "</i>) - " + datasetNow2[x].likes + " likes </div>";
     }
 }
 
@@ -1036,7 +1036,7 @@ function mostPersonalLikedTweets(dataset, handle,div) {
         }
         document.getElementById(div).appendChild(fieldZ);
         //console.log(tweets[u].tweet + " " + tweets[u].likes + "<br/> ----");
-        document.getElementById("contributorField2-"+u).innerHTML = "<div><a href='" + tweets[u].link + "' target='_blank'>" + tweets[u].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + tweets[u].handle.substring(1) + "'>" + tweets[u].handle + "</i>) - " + tweets[u].likes + " likes </div>";
+        document.getElementById("contributorField2-"+u).innerHTML = "<div class='fullTweet'><a href='" + tweets[u].link + "' target='_blank'>" + tweets[u].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + tweets[u].handle.substring(1) + "'>" + tweets[u].handle + "</i>) - " + tweets[u].likes + " likes </div>";
     }
 }
 
@@ -1062,7 +1062,7 @@ function mostPersonalRetweetedTweets(dataset, handle, div) {
         }
         document.getElementById(div).appendChild(fieldZ);
         //console.log(tweets[u].tweet + " " + tweets[u].likes + "<br/> ----");
-        document.getElementById("contributorField3-"+u).innerHTML = "<div><a href='" + tweets[u].link + "' target='_blank'>" + tweets[u].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + tweets[u].handle.substring(1) + "'>" + tweets[u].handle + "</i>) - " + tweets[u].retweets + " retweets </div>";
+        document.getElementById("contributorField3-"+u).innerHTML = "<div class='fullTweet'><a href='" + tweets[u].link + "' target='_blank'>" + tweets[u].tweet + "</a></div><div class='tweetInfo'> (<i><a href='http://www.twitter.com/" + tweets[u].handle.substring(1) + "'>" + tweets[u].handle + "</i>) - " + tweets[u].retweets + " retweets </div>";
     }
 }
 
@@ -1147,7 +1147,7 @@ function likesOnTweets(dataset,person,div) {
     }
     result = likes/tweets * 100;
     //console.log(likes  + " - " + tweets);
-    createDiagram(div,0,"The procentage of tweets that was liked at least once:", result,"orange","grey",document.getElementById(div).clientHeight/2);
+    createDiagram(div,0,"The procentage of tweets that was liked at least once:", result,"#FF842B","grey",document.getElementById(div).clientHeight/2,likes,tweets);
 }
 
 // Fix %-wheel with procent of tweets that was retweeted.
@@ -1166,7 +1166,7 @@ function retweetsOfTweets(dataset,person,div) {
     }
     result = retweets/tweets * 100;
     //console.log(retweets  + " - " + tweets);
-    createDiagram(div,1,"The procentage of tweets that was retweeted at least once:", result,"orange","grey",document.getElementById(div).clientHeight/2);
+    createDiagram(div,1,"The procentage of tweets that was retweeted at least once:", result,"#FF842B","grey",document.getElementById(div).clientHeight/2,retweets,tweets);
 }
 
 // Fix %-wheel with procent of tweets had engagement with other users.
@@ -1185,7 +1185,7 @@ function engangementInTweets(dataset,person,div) {
     }
     result = tweetsWithUsers/tweets * 100;
     //console.log(retweets  + " - " + tweets);
-    createDiagram(div,2,"The procentage of tweets that had other users tagged in them:", result,"orange","grey",document.getElementById(div).clientHeight/2);
+    createDiagram(div,2,"The procentage of tweets that had other users tagged in them:", result,"#FF842B","grey",document.getElementById(div).clientHeight/2,tweetsWithUsers,tweets);
 }
 
 // Fix %-wheel number of tweets from person of entire dataset.
@@ -1198,11 +1198,11 @@ function tweetsOfEntireSet(dataset,person,div) {
     }
     result = tweets/dataset.length * 100;
     //console.log(retweets  + " - " + tweets);
-    createDiagram(div,3,"The procentage of tweets made from " + person + " from the entire dataset:", result,"orange","grey",document.getElementById(div).clientHeight/2);
+    createDiagram(div,3,"The procentage of tweets made from " + person + " from the entire dataset:", result,"#FF842B","grey",document.getElementById(div).clientHeight/2,tweets,dataset.length);
 }
 
 // Simple function to create the wheel
-function createDiagram(div,id,info,procent,color1,color2,size) {
+function createDiagram(div,id,info,procent,color1,color2,size,partNumber,fullNumber) {
   procent = parseFloat(procent.toFixed(1));
   document.getElementById(div).innerHTML = "<p>" + info + "</p>";
   var canvasForProcentages = document.createElement('canvas');
@@ -1231,7 +1231,7 @@ function createDiagram(div,id,info,procent,color1,color2,size) {
   	canvasForProcentagesCtx.fill();
   	lastend += Math.PI * 2 * (data[i] / myTotal);
 	}
-	canvasForProcentagesCtx.fillStyle = "#666";
+	canvasForProcentagesCtx.fillStyle = "rgba(81,70,105,1)";
 	canvasForProcentagesCtx.beginPath();
 	canvasForProcentagesCtx.moveTo(canvasForProcentages.width / 2, canvasForProcentages.height / 2);
 	canvasForProcentagesCtx.arc(canvasForProcentages.width / 2,canvasForProcentages.height / 2,(canvasForProcentages.height / 2)-(canvasForProcentages.height / 10),0,2*Math.PI);
@@ -1242,12 +1242,13 @@ function createDiagram(div,id,info,procent,color1,color2,size) {
   infoDiv.style.width = size + "px";
   infoDiv.style.height = size + "px";
   infoDiv.style.marginTop = -size - 4 + "px";
-  infoDiv.style.lineHeight = size + "px";
+  infoDiv.style.lineHeight = size + 5 + "px";
   infoDiv.style.textAlign = "center";
   infoDiv.style.fontSize = size/3.5 + "px";
-  infoDiv.style.color = color1;
+  infoDiv.style.color = "rgba(255,255,255,1)";
   document.getElementById(div).appendChild(infoDiv);
   document.getElementById("info" + id).innerHTML = procent + "%";
+  document.getElementById("info" + id).title = partNumber + " out of " + fullNumber;
 }
 
 function personalOutwardRelations(dataset,person) {

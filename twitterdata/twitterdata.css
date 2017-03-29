@@ -3,6 +3,10 @@
 body {
     overflow-x:hidden;
     background: #666;
+    background: -webkit-linear-gradient(left top, #403D45, #463569); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom right, #403D45, #463569); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom right, #403D45, #463569); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom right, #403D45, #463569); /* Standard syntax */
     color:white;
     font-family: "Lato","Trebuchet MS";
 }
@@ -15,13 +19,17 @@ body {
     margin-left:10px;
 }
 
+#canvasContainer {
+    background-color:rgba(255,255,255,.05);
+}
+
 .unEven {
-    background-color:rgba(89,89,89,.80);
+    background-color:rgba(89,89,89,.2);
     width:100%;
 }
 
 .even {
-    background-color:rgba(120,120,120,.80);
+    background-color:rgba(120,120,120,.2);
     width:100%;
 }
 
@@ -47,6 +55,7 @@ body {
 .personalVisualizationContainer {
     width:100%;
     height:300px;
+    background-color:rgba(81,70,105,1); /* #1E1336 */
 }
 
 .handleOfUser {
@@ -56,7 +65,7 @@ body {
 .listContainer {
     height:250px !important;
     width:32.333% !important;
-    background-color:rgba(89,89,89,.80);
+    background-color:rgba(255,255,255,.05);
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -64,7 +73,7 @@ body {
     margin-right:0.5%;
     overflow-x: hidden;
     overflow-y: scroll;
-    border: 3px solid lightgrey;
+    border: 3px solid rgba(255,255,255,.05);
     margin-top: 20px !important;
 }
 
@@ -127,7 +136,7 @@ body {
     height:40px;
     line-height:40px;
     text-align: center;
-    background-color:#444;
+    background-color:rgba(81,70,105,1);
     border:1px solid white;
     color:white;
     cursor:pointer;
@@ -137,6 +146,10 @@ body {
     height:100%;
     width:50%;
     float:left;
+}
+
+.fullTweet {
+    padding-right:15px;
 }
 
 .personalRelationsContainer {
@@ -149,4 +162,34 @@ body {
     width:50%;
     height:50%;
     float:left;
+}
+
+#field {
+    margin-left:0px;
+    margin-right:1% !important;
+}
+
+#field3 {
+    margin-right:0px;
+    margin-left:1% !important;
+}
+
+.wheelContainerForSingleWheel {
+    text-align: justify;
+    padding-left:20px;
+    padding-right:20px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  background-color: rgba(200,200,200,0.6);
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(255,255,255,0.8);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.8);
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
 }
