@@ -53,6 +53,7 @@ function showFirstTwitterData() {
     sortDatasetAfterDate(globalData);
     personalOutwardRelations(globalData,"@knanton");
     //plotDataForAllDaysIn24HourInterval(globalData);
+    generateFooter();
 }
 
 function reshowFirstTwitterData() {
@@ -90,36 +91,36 @@ function generateSetup() {
 
     var intro = document.createElement('div');
     intro.id = "intro";
-    var length = ((window.innerWidth/4)*1)-30;
-    intro.style.width  = length + "px";
     intro.style.height = "350px";
-    intro.style.float = "left";
+    //intro.style.float = "left";
     document.getElementById("introContainer").appendChild(intro);
     //canvas.style.border = "1px solid";
 
     var identifier = document.createElement('div');
     identifier.id = "canvasContainer";
-    var length = ((window.innerWidth/4)*3)-30;
-    identifier.style.width  = length + "px";
-    //identifier.style.height = "350px";
-    identifier.style.float = "right";
     document.getElementById("introContainer").appendChild(identifier);
 
     var canvasHeadline = document.createElement('h3');
     canvasHeadline.id = "canvasHeadline";
-    var length2 = ((window.innerWidth/4)*3)-30;
-    canvasHeadline.style.width  = length2 + "px";
     //canvasHeadline.style.height = "50px";
     document.getElementById("canvasContainer").appendChild(canvasHeadline);
 
     var canvas = document.createElement('canvas');
     var ctx = canvas.getContext("2d");
     canvas.id = "canvas";
-    canvas.width = ((window.innerWidth/4)*3)-30;
+    canvas.width = window.innerWidth;
     canvas.height = 300;
     canvas.style.zIndex = 8;
     //canvas.style.border = "1px solid";
     document.getElementById("canvasContainer").appendChild(canvas);
+}
+
+function generateFooter() {
+    var footer = document.createElement('footer');
+    footer.id = "jsprFooter";
+    footer.className = "jsprFooterStyled";
+    document.body.appendChild(footer);
+    document.getElementById("jsprFooter").innerHTML = "by <a href='http://www.twitter.com/justjspr'>jspr</a>";
 }
 
 function plotDataForAllDaysIn24HourInterval(dataset) {
@@ -435,7 +436,7 @@ function showEntireEventTweetProgress(dataset,person) {
             ctx.fillStyle = colorForArc;
             ctx.beginPath();
             //console.log(arrayOfDividers[k] + " " + heightZ + " " + hours[n][k]);
-            ctx.arc((singlePoint*(k))+((n)*difference)+(singlePoint/2),heightZ,2,0,2*Math.PI);
+            ctx.arc((singlePoint*(k))+((n)*difference)+(singlePoint/2),heightZ,4,0,2*Math.PI);
             ctx.stroke();
             ctx.closePath();
             ctx.fill();
@@ -957,7 +958,7 @@ function showPersonalStatistics(dataset,person) {
             ctx.fillStyle = colorForArc;
             ctx.beginPath();
             //console.log(arrayOfDividers[k] + " " + heightZ + " " + hours[n][k]);
-            ctx.arc((singlePoint*(k))+((n)*difference)+(singlePoint/2),heightZ,2,0,2*Math.PI);
+            ctx.arc((singlePoint*(k))+((n)*difference)+(singlePoint/2),heightZ,4,0,2*Math.PI);
             ctx.stroke();
             ctx.closePath();
             ctx.fill();
