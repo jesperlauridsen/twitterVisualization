@@ -490,11 +490,16 @@ function showEntireEventTweetProgress(dataset,person) {
 }
 
 function creatingTweetOverview(dataset) {
+
+    var personalVisualization = document.createElement('div');
+    personalVisualization.id = "personalVisualization";
+    personalVisualization.className = "personalVisualizationContainer";
+    document.body.appendChild(personalVisualization);
+
     var overallContainerForLists = document.createElement('div');
     overallContainerForLists.id = "overallContainerForLists";
     overallContainerForLists.className = "overallContainerForLists";
     document.body.appendChild(overallContainerForLists);
-
 
     var headlineContainer = document.createElement('div');
     headlineContainer.id = "headlineContainer";
@@ -551,12 +556,19 @@ function creatingTweetOverview(dataset) {
 }
 
 function createFinalPersonalVisualization(person) {
-    var personalVisualization = document.createElement('div');
-    personalVisualization.id = "personalVisualization";
-    personalVisualization.className = "personalVisualizationContainer";
+    //var personalVisualization = document.createElement('div');
+    //personalVisualization.id = "personalVisualization";
+    //personalVisualization.className = "personalVisualizationContainer";
     //document.body.appendChild(personalVisualization);
     //document.getElementsByClassName("introContainer")[0].parentNode.appendChild(personalVisualization);
-    document.getElementsByClassName("overallContainerForLists")[0].insertBefore(personalVisualization, document.getElementsByClassName("overallContainerForLists")[0].children[0]);
+    //document.getElementsByClassName("overallContainerForLists")[0].insertBefore(personalVisualization, document.getElementsByClassName("overallContainerForLists")[0].children[0]);
+
+    var personalVisHeader = document.createElement('div');
+    personalVisHeader.id = "personalVisHeader";
+    personalVisHeader.className = "personalVisHeaderContainer";
+    document.getElementById("personalVisualization").appendChild(personalVisHeader);
+    document.getElementById("personalVisHeader").innerHTML = "<h3>Personal statistics for " + person + "</h3>";
+
     createEntirePersonalRelationsFrame("personalVisualization",person);
 }
 
@@ -1102,11 +1114,7 @@ function addResetButton() {
 }
 
 function removePersonalStatistics() {
-    if(!document.getElementById("personalVisualization")) {
-    }
-    else {
-   document.getElementById("personalVisualization").parentNode.removeChild(document.getElementById("personalVisualization"));
-    }
+   document.getElementById("personalVisualization").innerHTML = "";
 }
 
 function createEntirePersonalRelationsFrame(div,person) {
@@ -1122,6 +1130,8 @@ function createEntirePersonalRelationsFrame(div,person) {
     }
     var personalRelationsContainer = document.createElement('div');
     personalRelationsContainer.id = "personalRelationsContainer";
+    console.log("HERE IT IS!!!! " + document.getElementById("wheelContainer").offsetHeight);
+    personalRelationsContainer.style.height = document.getElementById("wheelContainer").offsetHeight; + "px";
     personalRelationsContainer.className = "personalRelationsContainer";
     document.getElementById(div).appendChild(personalRelationsContainer);
     likesOnTweets(globalData,person,"wheelContainerForSingleWheel0");
@@ -1137,6 +1147,8 @@ function likesOnTweets(dataset,person,div) {
     var tweets = 0;
     var likes = 0;
     var result = 0;
+    var allLikes = 0;
+    var average = 0;
     for(i=0;i<dataset.length;i++) {
         if(dataset[i].likes != 0 && dataset[i].handle === person) {
             likes = likes + 1;
@@ -1145,10 +1157,16 @@ function likesOnTweets(dataset,person,div) {
         else if(dataset[i].likes === 0 && dataset[i].handle === person) {
             tweets = tweets + 1;
         }
+        if(dataset[i].likes != 0) {
+            allLikes = allLikes + 1;
+        }
     }
+    var authors = findAllAuthors(dataset);
+    average = (allLikes/authors) / (dataset.length/authors) * 100;
     result = likes/tweets * 100;
     //console.log(likes  + " - " + tweets);
-    createDiagram(div,0,"The procentage of tweets that was liked at least once:", result,"#FF842B","grey",document.getElementById(div).clientHeight/2,likes,tweets);
+    console.log(average + " procentage of likes from " + authors + " doing " + allLikes + " liked tweets" + " all tweets " + dataset.length);
+    createDiagram(div,0,"The procentage of tweets that was liked at least once", result,"#FF842B","grey",document.getElementById(div).clientHeight/3,likes,tweets,average);
 }
 
 // Fix %-wheel with procent of tweets that was retweeted.
@@ -1156,6 +1174,8 @@ function retweetsOfTweets(dataset,person,div) {
     var tweets = 0;
     var retweets = 0;
     var result = 0;
+    var allRetweets = 0;
+    var average = 0;
     for(i=0;i<dataset.length;i++) {
         if(dataset[i].retweets != 0 && dataset[i].handle === person) {
             retweets = retweets + 1;
@@ -1164,10 +1184,16 @@ function retweetsOfTweets(dataset,person,div) {
         else if(dataset[i].retweets === 0 && dataset[i].handle === person) {
             tweets = tweets + 1;
         }
+        if(dataset[i].retweets != 0) {
+            allRetweets = allRetweets + 1;
+        }
     }
+    var authors = findAllAuthors(dataset);
+    average = (allRetweets/authors) / (dataset.length/authors) * 100;
     result = retweets/tweets * 100;
     //console.log(retweets  + " - " + tweets);
-    createDiagram(div,1,"The procentage of tweets that was retweeted at least once:", result,"#FF842B","grey",document.getElementById(div).clientHeight/2,retweets,tweets);
+    console.log(average + " procentage of retweets from " + authors + " doing " + allRetweets + " retweeted tweets");
+    createDiagram(div,1,"The procentage of tweets that was retweeted at least once", result,"#FF842B","grey",document.getElementById(div).clientHeight/3,retweets,tweets,average);
 }
 
 // Fix %-wheel with procent of tweets had engagement with other users.
@@ -1175,6 +1201,8 @@ function engangementInTweets(dataset,person,div) {
     var tweets = 0;
     var tweetsWithUsers = 0;
     var result = 0;
+    var tweetsFromAllusers = 0;
+    var average = 0;
     for(i=0;i<dataset.length;i++) {
         if(dataset[i].handle === person && dataset[i].tweet.indexOf("@") != -1 && dataset[i].tweet.charAt(dataset[i].tweet.indexOf("@")+1) != " ") {
             tweetsWithUsers = tweetsWithUsers + 1;
@@ -1183,27 +1211,72 @@ function engangementInTweets(dataset,person,div) {
         else if(dataset[i].handle === person) {
             tweets = tweets + 1;
         }
+        if(dataset[i].tweet.indexOf("@") != -1 && dataset[i].tweet.charAt(dataset[i].tweet.indexOf("@")+1) != " ") {
+            tweetsFromAllusers = tweetsFromAllusers + 1;
+        }
     }
+    var authors = findAllAuthors(dataset);
+    average = (tweetsFromAllusers/authors) / (dataset.length/authors) * 100;
+    //average = tweetsFromAllusers/dataset.length * 100;
     result = tweetsWithUsers/tweets * 100;
     //console.log(retweets  + " - " + tweets);
-    createDiagram(div,2,"The procentage of tweets that had other users tagged in them:", result,"#FF842B","grey",document.getElementById(div).clientHeight/2,tweetsWithUsers,tweets);
+    console.log(average + " from " + tweetsFromAllusers + " tweets with engagement compared to all tweets " + dataset.length);
+    createDiagram(div,2,"The procentage of tweets that had other users tagged in them", result,"#FF842B","grey",document.getElementById(div).clientHeight/3,tweetsWithUsers,tweets,average);
 }
 
 // Fix %-wheel number of tweets from person of entire dataset.
 function tweetsOfEntireSet(dataset,person,div) {
     var tweets = 0;
+    var result = 0;
+    var average = 0;
+    average = 0;
     for(i=0;i<dataset.length;i++) {
         if(dataset[i].handle === person) {
             tweets = tweets + 1;
         }
     }
+    authors = findAllAuthors(dataset);
     result = tweets/dataset.length * 100;
+    average = dataset.length/authors;
     //console.log(retweets  + " - " + tweets);
-    createDiagram(div,3,"The procentage of tweets made from " + person + " from the entire dataset:", result,"#FF842B","grey",document.getElementById(div).clientHeight/2,tweets,dataset.length);
+    console.log(average + " from + " + authors + " authors tweeting " + dataset.length);
+    createDiagram(div,3,"The procentage of tweets from " + person + " in the entire dataset", result,"#FF842B","grey",document.getElementById(div).clientHeight/3,tweets,dataset.length,average);
+}
+
+
+function findAllAuthors(dataset) {
+    var authors = [];
+    for(u=0;u<globalData.length;u++) {
+        //console.log("running");
+        alreadyThere = false;
+        for(i=0;i<authors.length;i++) {
+            var stringA = globalData[u].handle;
+            var stringB = authors[i].handle;
+            //console.log("is " + stringA + " and " + stringB + " the same?");
+            //console.log(stringA.localeCompare(stringB) === 0);
+            if(stringA.localeCompare(stringB) === 0 && alreadyThere === false) {
+                alreadyThere = true;
+                authors[i].numberOfTweets = authors[i].numberOfTweets + 1;
+            }
+        }
+        //console.log("is he already there? " + alreadyThere);
+        if(alreadyThere === false) {
+            var author = {
+                name:globalData[u].tweeter,
+                handle:globalData[u].handle,
+                numberOfTweets:1,
+            }
+            //console.log("new author!" + globalData[u].tweeter);
+            authors.push(author);
+            //authors[authors.length-1].numberOfTweets = 1;
+        }
+        //console.log(authors);
+    }
+    return authors.length;
 }
 
 // Simple function to create the wheel
-function createDiagram(div,id,info,procent,color1,color2,size,partNumber,fullNumber) {
+function createDiagram(div,id,info,procent,color1,color2,size,partNumber,fullNumber,average) {
   procent = parseFloat(procent.toFixed(1));
   document.getElementById(div).innerHTML = "<p>" + info + "</p>";
   var canvasForProcentages = document.createElement('canvas');
@@ -1250,6 +1323,24 @@ function createDiagram(div,id,info,procent,color1,color2,size,partNumber,fullNum
   document.getElementById(div).appendChild(infoDiv);
   document.getElementById("info" + id).innerHTML = procent + "%";
   document.getElementById("info" + id).title = partNumber + " out of " + fullNumber;
+
+  var compareDiv = document.createElement('div');
+  compareDiv.className = "comparisonDiv";
+  compareDiv.id = "compareDiv" + id;
+  document.getElementById(div).appendChild(compareDiv);
+  var statChooser;
+  if(average < procent) {
+      statChooser = "<div class='wheelStat positiveStat'>+" ;
+  }
+  else if(average > procent) {
+      statChooser = "<div class='wheelStat negativeStat'>";
+  }
+  else if(average === procent) {
+      statChooser = "<div class='wheelStat neutralStat'>=";
+  }
+  document.getElementById("compareDiv" + id).innerHTML = statChooser + (parseFloat(procent.toFixed(1))-parseFloat(average.toFixed(1))).toFixed(1) + "%</div><div>compared to average of dataset</div>";
+
+  //console.log(average + " compared to " + partNumber + " out of " + fullNumber);
 }
 
 function personalOutwardRelations(dataset,person) {
