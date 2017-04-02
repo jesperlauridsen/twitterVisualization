@@ -51,7 +51,7 @@ function showFirstTwitterData() {
     showMostLiked(globalData,"field2");
     showMostRetweeted(globalData,"field3");
     sortDatasetAfterDate(globalData);
-    personalOutwardRelations(globalData,"@knanton");
+    //personalOutwardRelations(globalData,"@knanton");
     //plotDataForAllDaysIn24HourInterval(globalData);
     generateFooter();
 }
@@ -120,7 +120,7 @@ function generateFooter() {
     footer.id = "jsprFooter";
     footer.className = "jsprFooterStyled";
     document.body.appendChild(footer);
-    document.getElementById("jsprFooter").innerHTML = "by <a href='http://www.twitter.com/justjspr'>jspr</a>";
+    document.getElementById("jsprFooter").innerHTML = "by <a href='https://www.twitter.com/justjspr'>jspr</a>, code at <a href='https://github.com/jesperlauridsen/twiviz'>github</a>";
 }
 
 function plotDataForAllDaysIn24HourInterval(dataset) {
@@ -403,17 +403,19 @@ function showEntireEventTweetProgress(dataset,person) {
     hours.reverse();
     days.reverse();
     ctx.strokeStyle = "#000000";
-    ctx.beginPath();
-    ctx.moveTo(5,5);
-    ctx.lineTo(10,5)
-    ctx.stroke();
-    ctx.fillText(highestHour,10,9);
-    ctx.strokeStyle = "#000000";
-    ctx.beginPath();
-    ctx.moveTo(5,137.5);
-    ctx.lineTo(10,137.5);
-    ctx.stroke();
-    ctx.fillText(Math.floor(highestHour/2),10,141.5);
+
+    for(y=0;y<4;y++) {
+        ctx.strokeStyle ="rgba(127,127,127, 0.3)";
+        var number = [1,1.3333333,2,4];
+        ctx.beginPath();
+        ctx.moveTo(5,(280-((280-5)/number[y])));
+        ctx.lineTo(document.getElementById("canvas").width,(280-((280-5)/number[y])));
+        ctx.stroke();
+        console.log((300-((300-5)/number[y])));
+        ctx.strokeStyle = "#000000";
+        ctx.fillText(Math.floor(highestHour/number[y]),10,(280-((280-5)/number[y]))+5);
+    }
+
     //console.log(hours);
     var counterForColorForArc = 0;
     for(n=0;n<hours.length;n++) {
@@ -936,18 +938,19 @@ function showPersonalStatistics(dataset,person) {
     }
     //hours.reverse();
     //days.reverse();
-    ctx.strokeStyle = "#000000";
-    ctx.beginPath();
-    ctx.moveTo(5,5);
-    ctx.lineTo(10,5)
-    ctx.stroke();
-    ctx.fillText(highestHour,10,9);
-    ctx.strokeStyle = "#000000";
-    ctx.beginPath();
-    ctx.moveTo(5,137.5);
-    ctx.lineTo(10,137.5);
-    ctx.stroke();
-    ctx.fillText(Math.floor(highestHour/2),10,141.5);
+
+    for(y=0;y<4;y++) {
+        ctx.strokeStyle ="rgba(127,127,127, 0.3)";
+        var number = [1,1.3333333,2,4];
+        ctx.beginPath();
+        ctx.moveTo(5,(280-((280-5)/number[y])));
+        ctx.lineTo(document.getElementById("canvas").width,(280-((280-5)/number[y])));
+        ctx.stroke();
+        console.log((280-((280-5)/number[y])));
+        ctx.strokeStyle = "#000000";
+        ctx.fillText(Math.floor(highestHour/number[y]),10,(280-((280-5)/number[y]))+5);
+    }
+
     console.log(hours);
     var counterForColorForArc = 0;
     for(n=0;n<hours.length;n++) {
@@ -1023,6 +1026,7 @@ function showPersonalStatistics(dataset,person) {
     mostPersonalLikedTweets(globalData,document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML,"field2");
     mostPersonalRetweetedTweets(globalData,document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML,"field3");
     createFinalPersonalVisualization(document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
+    personalOutwardRelations(dataset,document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
     //console.log(document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
     //console.log(hours);
 }
@@ -1345,6 +1349,7 @@ function createDiagram(div,id,info,procent,color1,color2,size,partNumber,fullNum
 
 function personalOutwardRelations(dataset,person) {
     var tweetArray = [];
+    var authorFrequency = [];
     for(h=0;h<dataset.length;h++) {
         if(dataset[h].handle === person) {
             tweetArray.push(dataset[h]);
@@ -1367,9 +1372,80 @@ function personalOutwardRelations(dataset,person) {
             if(name.substr(name.length - 2,2) === "’s") {
                 name = name.slice(0,-2);
             }
+            var authorPresent = false;
+            for(y=0;y<authorFrequency.length;y++) {
+                //console.log(name.toLowerCase() + " and " + authorFrequency[y].name.toLowerCase());
+                if(name.toLowerCase() === authorFrequency[y].name.toLowerCase()) {
+                    authorPresent = true;
+                    authorFrequency[y].number = authorFrequency[y].number + 1;
+                }
+            }
+            if(authorPresent === false) {
+                var authorObject = {
+                    name:name,
+                    number:1,
+                };
+                authorFrequency.push(authorObject);
+            }
             console.log(f + " at: " + tweetArray[j].tweet.indexOf("@",lastIndex) + " to " + tweetArray[j].tweet.indexOf(" ",tweetArray[j].tweet.indexOf("@",lastIndex)+1) + " name: " + name);
             lastIndex = tweetArray[j].tweet.indexOf("@",lastIndex) + 1;
         }
         //console.log(counter);
+    }
+    showPersonalOutwardRelations(authorFrequency,person);
+}
+
+function showPersonalOutwardRelations(dataArray,person) {
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext("2d");
+    canvas.id = "personalRelationsCanvas";
+    canvas.width = document.getElementById("personalRelationsContainer").clientWidth;
+    canvas.height = document.getElementById("personalRelationsContainer").clientHeight;
+    document.getElementById("personalRelationsContainer").appendChild(canvas);
+    //centerpiece
+    ctx.font = "14px Trebuchet MS";
+    ctx.fillStyle = "rgba(255,255,255,1)";
+    ctx.fillText(person,document.getElementById("personalRelationsContainer").clientWidth/2-ctx.measureText(person).width/2,document.getElementById("personalRelationsContainer").clientHeight/2);
+    ctx.strokeStyle = "rgba(255,255,255,1)";
+    ctx.beginPath();
+    ctx.arc(document.getElementById("personalRelationsContainer").clientWidth/2,document.getElementById("personalRelationsContainer").clientHeight/2-4,ctx.measureText(person).width/2+5,0,2*Math.PI);
+    ctx.stroke();
+    ctx.closePath();
+    if(document.getElementById("personalRelationsContainer").clientWidth>=document.getElementById("personalRelationsContainer").clientHeight) {
+
+    }
+    else {
+
+    }
+
+
+
+    for(j=0;j<dataArray;j++) {
+
+    }
+
+    var sortedDataArray = dataArray;
+
+    sortedDataArray.sort(function(a, b) {return parseFloat(a.number) - parseFloat(b.number);});
+    sortedDataArray.reverse();
+
+    //All the person entries around center
+    var TO_RADIANS = Math.PI/180;
+    var angle = 0;
+    console.log(dataArray.length);
+    for(u=1;u<=dataArray.length;u++) {
+        var color1 =  Math.floor((Math.random() * 150) + 0);  //Math.round((255/dataArray.length)*u);
+        var color2 =  Math.floor((Math.random() * 105) + 150);//Math.round(255 - ((255/dataArray.length)*u));
+        color = "rgba(" + color1 + ",127," + color2 + ",1)";
+        ctx.strokeStyle = color;
+        distance = ctx.measureText(person).width/2;
+        var x2 = document.getElementById("personalRelationsContainer").clientWidth/2 + Math.cos(angle * TO_RADIANS) * (distance + 50);
+        var y2 = document.getElementById("personalRelationsContainer").clientHeight/2 + Math.sin(angle * TO_RADIANS) * (distance + 50);
+        ctx.beginPath();
+        ctx.arc(x2,y2,25,0,2*Math.PI);
+        ctx.stroke();
+        ctx.closePath();
+        console.log(angle);
+        angle = ((360/dataArray.length) * (u));
     }
 }
