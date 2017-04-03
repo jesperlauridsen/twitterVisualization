@@ -1439,8 +1439,8 @@ function showPersonalOutwardRelations(dataArray,person) {
         color = "rgba(" + color1 + ",127," + color2 + ",1)";
         ctx.strokeStyle = color;
         distance = ctx.measureText(person).width/2;
-        var x2 = document.getElementById("personalRelationsContainer").clientWidth/2 + Math.cos(angle * TO_RADIANS) * (distance + 50);
-        var y2 = document.getElementById("personalRelationsContainer").clientHeight/2 + Math.sin(angle * TO_RADIANS) * (distance + 50);
+        var x2 = document.getElementById("personalRelationsContainer").clientWidth/2 + Math.cos(angle * TO_RADIANS) * (distance + 200);
+        var y2 = document.getElementById("personalRelationsContainer").clientHeight/2 + Math.sin(angle * TO_RADIANS) * (distance + 200);
         ctx.beginPath();
         ctx.arc(x2,y2,25,0,2*Math.PI);
         ctx.stroke();
