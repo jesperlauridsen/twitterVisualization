@@ -1411,17 +1411,12 @@ function showPersonalOutwardRelations(dataArray,person) {
     ctx.arc(document.getElementById("personalRelationsContainer").clientWidth/2,document.getElementById("personalRelationsContainer").clientHeight/2-4,ctx.measureText(person).width/2+5,0,2*Math.PI);
     ctx.stroke();
     ctx.closePath();
+    var calHeight = 0;
     if(document.getElementById("personalRelationsContainer").clientWidth>=document.getElementById("personalRelationsContainer").clientHeight) {
-
+        calHeight = document.getElementById("personalRelationsContainer").clientHeight;
     }
     else {
-
-    }
-
-
-
-    for(j=0;j<dataArray;j++) {
-
+        calHeight = document.getElementById("personalRelationsContainer").clientWidth;
     }
 
     var sortedDataArray = dataArray;
