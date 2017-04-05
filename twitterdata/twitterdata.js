@@ -313,7 +313,7 @@ function showEntireEventTweetProgress(dataset,person) {
     //console.log(Math.ceil(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay))));
     //console.log(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay)));
     //console.log(startDate.realtime + " " + endDate.realtime);
-    console.log(diffDays);
+    //console.log(diffDays);
     var difference = canvas.width/diffDays;
     var singlePoint = (canvas.width/diffDays)/24;
     var startSinglePoint = singlePoint/2;
@@ -375,7 +375,7 @@ function showEntireEventTweetProgress(dataset,person) {
             days[days.length-1].push(dataset[n]);
         }
     }
-    console.log(days);
+    //console.log(days);
     days.reverse();
     for(u=0;u<days.length;u++) {
         hours[hours.length] = new Array();
@@ -411,7 +411,7 @@ function showEntireEventTweetProgress(dataset,person) {
         ctx.moveTo(5,(280-((280-5)/number[y])));
         ctx.lineTo(document.getElementById("canvas").width,(280-((280-5)/number[y])));
         ctx.stroke();
-        console.log((300-((300-5)/number[y])));
+        //console.log((300-((300-5)/number[y])));
         ctx.strokeStyle = "#000000";
         ctx.fillText(Math.floor(highestHour/number[y]),10,(280-((280-5)/number[y]))+5);
     }
@@ -946,12 +946,12 @@ function showPersonalStatistics(dataset,person) {
         ctx.moveTo(5,(280-((280-5)/number[y])));
         ctx.lineTo(document.getElementById("canvas").width,(280-((280-5)/number[y])));
         ctx.stroke();
-        console.log((280-((280-5)/number[y])));
+        //console.log((280-((280-5)/number[y])));
         ctx.strokeStyle = "#000000";
         ctx.fillText(Math.floor(highestHour/number[y]),10,(280-((280-5)/number[y]))+5);
     }
 
-    console.log(hours);
+    //console.log(hours);
     var counterForColorForArc = 0;
     for(n=0;n<hours.length;n++) {
         ctx.fillStyle = "white";
@@ -1041,7 +1041,7 @@ function mostPersonalLikedTweets(dataset, handle,div) {
     }
     tweets.sort(function(a, b) {return parseFloat(a.likes) - parseFloat(b.likes);});
     tweets.reverse();
-    console.log(tweets);
+    //console.log(tweets);
     for(u=0;u<tweets.length;u++) {
         var fieldZ = document.createElement('div');
         fieldZ.id = "contributorField2-" + u;
@@ -1067,7 +1067,7 @@ function mostPersonalRetweetedTweets(dataset, handle, div) {
     }
     tweets.sort(function(a, b) {return parseFloat(a.retweets) - parseFloat(b.retweets);});
     tweets.reverse();
-    console.log(tweets);
+    //console.log(tweets);
     for(u=0;u<tweets.length;u++) {
         var fieldZ = document.createElement('div');
         fieldZ.id = "contributorField3-" + u;
@@ -1102,7 +1102,7 @@ function sanatizeData(dataset) {
         if(dataset[i].tweet.indexOf("https://") != -1) {
             if(dataset[i].tweet.charAt(dataset[i].tweet.indexOf("https://")-1) != " ") {
                 dataset[i].tweet = [dataset[i].tweet.slice(0, dataset[i].tweet.indexOf("https://")), " ", dataset[i].tweet.slice(dataset[i].tweet.indexOf("https://"))].join('');
-                console.log("New: " + dataset[i].tweet);
+                //console.log("New: " + dataset[i].tweet);
             }
         }
     }
@@ -1134,7 +1134,7 @@ function createEntirePersonalRelationsFrame(div,person) {
     }
     var personalRelationsContainer = document.createElement('div');
     personalRelationsContainer.id = "personalRelationsContainer";
-    console.log("HERE IT IS!!!! " + document.getElementById("wheelContainer").offsetHeight);
+    //console.log("HERE IT IS!!!! " + document.getElementById("wheelContainer").offsetHeight);
     personalRelationsContainer.style.height = document.getElementById("wheelContainer").offsetHeight; + "px";
     personalRelationsContainer.className = "personalRelationsContainer";
     document.getElementById(div).appendChild(personalRelationsContainer);
@@ -1169,7 +1169,7 @@ function likesOnTweets(dataset,person,div) {
     average = (allLikes/authors) / (dataset.length/authors) * 100;
     result = likes/tweets * 100;
     //console.log(likes  + " - " + tweets);
-    console.log(average + " procentage of likes from " + authors + " doing " + allLikes + " liked tweets" + " all tweets " + dataset.length);
+    //console.log(average + " procentage of likes from " + authors + " doing " + allLikes + " liked tweets" + " all tweets " + dataset.length);
     createDiagram(div,0,"The procentage of tweets that was liked at least once", result,"#FF842B","grey",document.getElementById(div).clientHeight/3,likes,tweets,average);
 }
 
@@ -1196,7 +1196,7 @@ function retweetsOfTweets(dataset,person,div) {
     average = (allRetweets/authors) / (dataset.length/authors) * 100;
     result = retweets/tweets * 100;
     //console.log(retweets  + " - " + tweets);
-    console.log(average + " procentage of retweets from " + authors + " doing " + allRetweets + " retweeted tweets");
+    //console.log(average + " procentage of retweets from " + authors + " doing " + allRetweets + " retweeted tweets");
     createDiagram(div,1,"The procentage of tweets that was retweeted at least once", result,"#FF842B","grey",document.getElementById(div).clientHeight/3,retweets,tweets,average);
 }
 
@@ -1224,7 +1224,7 @@ function engangementInTweets(dataset,person,div) {
     //average = tweetsFromAllusers/dataset.length * 100;
     result = tweetsWithUsers/tweets * 100;
     //console.log(retweets  + " - " + tweets);
-    console.log(average + " from " + tweetsFromAllusers + " tweets with engagement compared to all tweets " + dataset.length);
+    //console.log(average + " from " + tweetsFromAllusers + " tweets with engagement compared to all tweets " + dataset.length);
     createDiagram(div,2,"The procentage of tweets that had other users tagged in them", result,"#FF842B","grey",document.getElementById(div).clientHeight/3,tweetsWithUsers,tweets,average);
 }
 
@@ -1243,7 +1243,7 @@ function tweetsOfEntireSet(dataset,person,div) {
     result = tweets/dataset.length * 100;
     average = dataset.length/authors;
     //console.log(retweets  + " - " + tweets);
-    console.log(average + " from + " + authors + " authors tweeting " + dataset.length);
+    //console.log(average + " from + " + authors + " authors tweeting " + dataset.length);
     createDiagram(div,3,"The procentage of tweets from " + person + " in the entire dataset", result,"#FF842B","grey",document.getElementById(div).clientHeight/3,tweets,dataset.length,average);
 }
 
@@ -1384,10 +1384,11 @@ function personalOutwardRelations(dataset,person) {
                 var authorObject = {
                     name:name,
                     number:1,
+                    randomNumber: Math.floor((Math.random() * 100) + 0),
                 };
                 authorFrequency.push(authorObject);
             }
-            console.log(f + " at: " + tweetArray[j].tweet.indexOf("@",lastIndex) + " to " + tweetArray[j].tweet.indexOf(" ",tweetArray[j].tweet.indexOf("@",lastIndex)+1) + " name: " + name);
+            //console.log(f + " at: " + tweetArray[j].tweet.indexOf("@",lastIndex) + " to " + tweetArray[j].tweet.indexOf(" ",tweetArray[j].tweet.indexOf("@",lastIndex)+1) + " name: " + name);
             lastIndex = tweetArray[j].tweet.indexOf("@",lastIndex) + 1;
         }
         //console.log(counter);
@@ -1406,41 +1407,62 @@ function showPersonalOutwardRelations(dataArray,person) {
     ctx.font = "14px Trebuchet MS";
     ctx.fillStyle = "rgba(255,255,255,1)";
     ctx.fillText(person,document.getElementById("personalRelationsContainer").clientWidth/2-ctx.measureText(person).width/2,document.getElementById("personalRelationsContainer").clientHeight/2);
-    ctx.strokeStyle = "rgba(255,255,255,1)";
+    ctx.strokeStyle = "rgba(255,255,255,0.5)";
     ctx.beginPath();
     ctx.arc(document.getElementById("personalRelationsContainer").clientWidth/2,document.getElementById("personalRelationsContainer").clientHeight/2-4,ctx.measureText(person).width/2+5,0,2*Math.PI);
     ctx.stroke();
     ctx.closePath();
     var calHeight = 0;
     if(document.getElementById("personalRelationsContainer").clientWidth>=document.getElementById("personalRelationsContainer").clientHeight) {
-        calHeight = document.getElementById("personalRelationsContainer").clientHeight;
+        calHeight = document.getElementById("personalRelationsContainer").clientHeight/2 - 20;
     }
     else {
-        calHeight = document.getElementById("personalRelationsContainer").clientWidth;
+        calHeight = document.getElementById("personalRelationsContainer").clientWidth/2 - 20;
     }
-
-    var sortedDataArray = dataArray;
-
-    sortedDataArray.sort(function(a, b) {return parseFloat(a.number) - parseFloat(b.number);});
-    sortedDataArray.reverse();
+    var highestValue = 0;
+    for(i=0;i<dataArray.length;i++) {
+        if(dataArray[i].number > highestValue) {
+            highestValue = dataArray[i].number;
+        }
+    }
+    //console.log(highestValue + " yeaaaaaaaaaaa");
+    dataArray.sort(function(a, b) {return parseFloat(a.randomNumber) - parseFloat(b.randomNumber);});
 
     //All the person entries around center
     var TO_RADIANS = Math.PI/180;
     var angle = 0;
-    console.log(dataArray.length);
-    for(u=1;u<=dataArray.length;u++) {
+    //console.log(dataArray.length);
+    for(u=1;u<dataArray.length;u++) {
         var color1 =  Math.floor((Math.random() * 150) + 0);  //Math.round((255/dataArray.length)*u);
         var color2 =  Math.floor((Math.random() * 105) + 150);//Math.round(255 - ((255/dataArray.length)*u));
-        color = "rgba(" + color1 + ",127," + color2 + ",1)";
+        var opacity = dataArray[u].number/highestValue;
+        console.log(opacity);
+        color = "rgba(" + color1 + ",127," + color2 + "," + opacity + ")";
         ctx.strokeStyle = color;
-        distance = ctx.measureText(person).width/2;
-        var x2 = document.getElementById("personalRelationsContainer").clientWidth/2 + Math.cos(angle * TO_RADIANS) * (distance + 200);
-        var y2 = document.getElementById("personalRelationsContainer").clientHeight/2 + Math.sin(angle * TO_RADIANS) * (distance + 200);
+        //console.log(ctx.measureText(dataArray[u].name).width);
+        //distance = ctx.measureText(dataArray[u].name).width;
+        console.log(dataArray[u].number/highestValue + " from " + dataArray[u].name);
+        distance = ((dataArray[u].number/highestValue) * (calHeight-(ctx.measureText(person).width))) - 10; //dataArray[u].number * highestValue;
+        //console.log(distance + " translated from " + dataArray[u].number + " from " + dataArray[u].name);
+        var x2 = document.getElementById("personalRelationsContainer").clientWidth/2 + Math.cos(angle * TO_RADIANS) * (calHeight - distance);
+        var y2 = document.getElementById("personalRelationsContainer").clientHeight/2 + Math.sin(angle * TO_RADIANS) * (calHeight - distance);
+
+        var x3 = document.getElementById("personalRelationsContainer").clientWidth/2 + Math.cos(angle * TO_RADIANS) * (ctx.measureText(person).width/2+5);
+        var y3 = document.getElementById("personalRelationsContainer").clientHeight/2 + Math.sin(angle * TO_RADIANS) * (ctx.measureText(person).width/2+5);
         ctx.beginPath();
-        ctx.arc(x2,y2,25,0,2*Math.PI);
+        ctx.arc(x3,y3-4,2,0,2*Math.PI);
+        //ctx.arc(x2,y2-5,ctx.measureText(dataArray[u].name).width/2+5,0,2*Math.PI);
+        ctx.fillStyle = "rgba(255,255,255," + opacity + ")";
+        ctx.fillText(dataArray[u].name,x2-ctx.measureText(dataArray[u].name).width/2,y2);
+        ctx.fillStyle = color;
+        ctx.fillText(dataArray[u].number + " mentions",x2-ctx.measureText(dataArray[u].number + " mentions").width/2,y2+13);
         ctx.stroke();
         ctx.closePath();
-        console.log(angle);
+        ctx.beginPath();
+        ctx.moveTo(x3,y3-4);
+        ctx.lineTo(x2,y2);
+        ctx.stroke();
+        //console.log(angle);
         angle = ((360/dataArray.length) * (u));
     }
 }
