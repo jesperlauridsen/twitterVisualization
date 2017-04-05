@@ -109,7 +109,7 @@ function generateSetup() {
     var ctx = canvas.getContext("2d");
     canvas.id = "canvas";
     canvas.width = window.innerWidth;
-    canvas.height = 300;
+    canvas.height = 320;
     canvas.style.zIndex = 8;
     //canvas.style.border = "1px solid";
     document.getElementById("canvasContainer").appendChild(canvas);
@@ -1388,7 +1388,7 @@ function personalOutwardRelations(dataset,person) {
                 };
                 authorFrequency.push(authorObject);
             }
-            //console.log(f + " at: " + tweetArray[j].tweet.indexOf("@",lastIndex) + " to " + tweetArray[j].tweet.indexOf(" ",tweetArray[j].tweet.indexOf("@",lastIndex)+1) + " name: " + name);
+            console.log(f + " at: " + tweetArray[j].tweet.indexOf("@",lastIndex) + " to " + tweetArray[j].tweet.indexOf(" ",tweetArray[j].tweet.indexOf("@",lastIndex)+1) + " name: " + name);
             lastIndex = tweetArray[j].tweet.indexOf("@",lastIndex) + 1;
         }
         //console.log(counter);
@@ -1397,6 +1397,7 @@ function personalOutwardRelations(dataset,person) {
 }
 
 function showPersonalOutwardRelations(dataArray,person) {
+    console.log(dataArray);
     var canvas = document.createElement('canvas');
     var ctx = canvas.getContext("2d");
     canvas.id = "personalRelationsCanvas";
@@ -1425,6 +1426,12 @@ function showPersonalOutwardRelations(dataArray,person) {
             highestValue = dataArray[i].number;
         }
     }
+    var longestName = 0;
+    for(c=0;c<dataArray.length;c++) {
+        if(ctx.measureText(dataArray[c].name).width > longestName) {
+            longestName = ctx.measureText(dataArray[c].name).width;
+        }
+    }
     //console.log(highestValue + " yeaaaaaaaaaaa");
     dataArray.sort(function(a, b) {return parseFloat(a.randomNumber) - parseFloat(b.randomNumber);});
 
@@ -1432,7 +1439,7 @@ function showPersonalOutwardRelations(dataArray,person) {
     var TO_RADIANS = Math.PI/180;
     var angle = 0;
     //console.log(dataArray.length);
-    for(u=1;u<dataArray.length;u++) {
+    for(u=0;u<dataArray.length;u++) {
         var color1 =  Math.floor((Math.random() * 150) + 0);  //Math.round((255/dataArray.length)*u);
         var color2 =  Math.floor((Math.random() * 105) + 150);//Math.round(255 - ((255/dataArray.length)*u));
         var opacity = dataArray[u].number/highestValue;
@@ -1442,7 +1449,7 @@ function showPersonalOutwardRelations(dataArray,person) {
         //console.log(ctx.measureText(dataArray[u].name).width);
         //distance = ctx.measureText(dataArray[u].name).width;
         console.log(dataArray[u].number/highestValue + " from " + dataArray[u].name);
-        distance = ((dataArray[u].number/highestValue) * (calHeight-(ctx.measureText(person).width))) - 10; //dataArray[u].number * highestValue;
+        distance = ((dataArray[u].number/highestValue) * (calHeight-(longestName))) - 10; //dataArray[u].number * highestValue;
         //console.log(distance + " translated from " + dataArray[u].number + " from " + dataArray[u].name);
         var x2 = document.getElementById("personalRelationsContainer").clientWidth/2 + Math.cos(angle * TO_RADIANS) * (calHeight - distance);
         var y2 = document.getElementById("personalRelationsContainer").clientHeight/2 + Math.sin(angle * TO_RADIANS) * (calHeight - distance);
@@ -1460,9 +1467,9 @@ function showPersonalOutwardRelations(dataArray,person) {
         ctx.closePath();
         ctx.beginPath();
         ctx.moveTo(x3,y3-4);
-        ctx.lineTo(x2,y2);
+        ctx.lineTo(x2,y2-4);
         ctx.stroke();
         //console.log(angle);
-        angle = ((360/dataArray.length) * (u));
+        angle = ((360/dataArray.length) * (u+1));
     }
 }
