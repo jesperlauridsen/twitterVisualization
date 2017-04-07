@@ -123,6 +123,10 @@ function generateFooter() {
     document.getElementById("jsprFooter").innerHTML = "by <a href='https://www.twitter.com/justjspr'>jspr</a>, code at <a href='https://github.com/jesperlauridsen/twiviz'>github</a>";
 }
 
+function generateOverallDatasetStatistics(dataset) {
+
+}
+
 function plotDataForAllDaysIn24HourInterval(dataset) {
     document.getElementById("canvasHeadline").innerHTML = "All tweets in the period in a 24 hour grid";
     var canvas = document.getElementById("canvas");
@@ -512,7 +516,7 @@ function creatingTweetOverview(dataset) {
     headline.id = "headline1";
     headline.className = "headline";
     document.getElementById("headlineContainer").appendChild(headline);
-    document.getElementById("headline1").innerHTML = "<h3>Most contributions</h3>";
+    document.getElementById("headline1").innerHTML = "<h3>Most contributions </h3><p style='display:inline-block;margin-left:5px;font-size:12px;color:grey'>- click to see individual statistics</p>";
 
     var headline1 = document.createElement('div');
     headline1.id = "headline2";
@@ -1386,7 +1390,9 @@ function personalOutwardRelations(dataset,person) {
                     number:1,
                     randomNumber: Math.floor((Math.random() * 100) + 0),
                 };
+                if(authorObject.name != "@") {
                 authorFrequency.push(authorObject);
+                }
             }
             console.log(f + " at: " + tweetArray[j].tweet.indexOf("@",lastIndex) + " to " + tweetArray[j].tweet.indexOf(" ",tweetArray[j].tweet.indexOf("@",lastIndex)+1) + " name: " + name);
             lastIndex = tweetArray[j].tweet.indexOf("@",lastIndex) + 1;
@@ -1415,10 +1421,10 @@ function showPersonalOutwardRelations(dataArray,person) {
     ctx.closePath();
     var calHeight = 0;
     if(document.getElementById("personalRelationsContainer").clientWidth>=document.getElementById("personalRelationsContainer").clientHeight) {
-        calHeight = document.getElementById("personalRelationsContainer").clientHeight/2 - 20;
+        calHeight = document.getElementById("personalRelationsContainer").clientHeight/2;
     }
     else {
-        calHeight = document.getElementById("personalRelationsContainer").clientWidth/2 - 20;
+        calHeight = document.getElementById("personalRelationsContainer").clientWidth/2;
     }
     var highestValue = 0;
     for(i=0;i<dataArray.length;i++) {
@@ -1432,6 +1438,7 @@ function showPersonalOutwardRelations(dataArray,person) {
             longestName = ctx.measureText(dataArray[c].name).width;
         }
     }
+    calHeight = calHeight - 20;// - (longestName/2);
     //console.log(highestValue + " yeaaaaaaaaaaa");
     dataArray.sort(function(a, b) {return parseFloat(a.randomNumber) - parseFloat(b.randomNumber);});
 
