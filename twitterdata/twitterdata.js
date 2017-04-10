@@ -124,7 +124,12 @@ function generateFooter() {
 }
 
 function generateOverallDatasetStatistics(dataset) {
-
+    for(y=0;y<8;y++) {
+        var generalStatistics = document.createElement('div');
+        generalStatistics.id = "generalStatisticsContainer" + y;
+        generalStatistics.className = "generalStatisticsClass";
+        document.getElementById("intro").appendChild(generalStatistics);
+    }
 }
 
 function plotDataForAllDaysIn24HourInterval(dataset) {
@@ -496,7 +501,6 @@ function showEntireEventTweetProgress(dataset,person) {
 }
 
 function creatingTweetOverview(dataset) {
-
     var personalVisualization = document.createElement('div');
     personalVisualization.id = "personalVisualization";
     personalVisualization.className = "personalVisualizationContainer";
