@@ -44,13 +44,15 @@ function loadTwitterData() {
 
 function showFirstTwitterData() {
     sanatizeData(globalData);
-    introductonToStatistics(globalData,"DST4L");
+    generateSetup();
+    generateOverallDatasetStatistics(globalData,"#DST4L");
+    //introductonToStatistics(globalData,"DST4L");
     creatingTweetOverview(globalData);
     showEntireEventTweetProgress(globalData);
     personWithHighestTweets(globalData,"field");
     showMostLiked(globalData,"field2");
     showMostRetweeted(globalData,"field3");
-    sortDatasetAfterDate(globalData);
+    //sortDatasetAfterDate(globalData);
     //personalOutwardRelations(globalData,"@knanton");
     //plotDataForAllDaysIn24HourInterval(globalData);
     generateFooter();
@@ -123,7 +125,27 @@ function generateFooter() {
     document.getElementById("jsprFooter").innerHTML = "by <a href='https://www.twitter.com/justjspr'>jspr</a>, code at <a href='https://github.com/jesperlauridsen/twiviz'>github</a>";
 }
 
-function generateOverallDatasetStatistics(dataset) {
+function generateOverallDatasetStatistics(dataset,hashtag) {
+    var daysBetween = 0;
+    var endDate = sortDatasetAfterDate(dataset,1);
+    var startDate = sortDatasetAfterDate(dataset,0);
+    var calDate = new Date(startDate.realtime.getTime());
+    var startDateToText = new Date();
+    startDateToText.setTime(startDate.realtime.getTime());
+    for(u=0;u<1;) {
+        if(calDate.getFullYear() <= endDate.realtime.getFullYear() && calDate.getMonth() <= endDate.realtime.getMonth() && calDate.getDate() <= endDate.realtime.getDate()) {
+            daysBetween = daysBetween + 1;
+        }
+        else {
+            u = 1;
+        }
+        calDate.setDate(calDate.getDate() + 1);
+    }
+    var entireDaysEvent = daysBetween;
+    var numberOfTweets = dataset.length;
+    var numberOfAuthors = findAllAuthors(dataset);
+    var averageTweetsPerDay = numberOfTweets/entireDaysEvent;
+
     for(y=0;y<8;y++) {
         var generalStatistics = document.createElement('div');
         generalStatistics.id = "generalStatisticsContainer" + y;
