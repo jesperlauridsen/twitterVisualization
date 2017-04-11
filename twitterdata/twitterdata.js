@@ -3,7 +3,8 @@ var dataInjected = 0;
 
 function loadTwitterData() {
     var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", "finaltweeterdata-sorted2.csv", true);
+    //rawFile.open("GET", "finaltweeterdata-sorted2.csv", true);
+    rawFile.open("GET", "try2.csv", true);
     rawFile.onreadystatechange = function ()
     {
         if(rawFile.readyState === 4)
@@ -34,6 +35,7 @@ function loadTwitterData() {
                    arrayOfDataObjects.push(object);
                 }
                 globalData = arrayOfDataObjects;
+                console.log(globalData);
                 dataInjected = 1;
                 showFirstTwitterData();
             }
@@ -71,7 +73,7 @@ function reshowFirstTwitterData() {
 function sortDatasetAfterDate(dataset,argument) {
     var timeSortedDataset = dataset;
     timeSortedDataset.sort(function(a, b) {return parseFloat(a.realtime.getTime()) - parseFloat(b.realtime.getTime());});
-    //console.log(timeSortedDataset);
+    console.log(timeSortedDataset);
     if(argument === 0) {
         //console.log("startdate: " + timeSortedDataset[0].realtime);
         return timeSortedDataset[0];
@@ -125,15 +127,20 @@ function generateFooter() {
 }
 
 function generateOverallDatasetStatistics(dataset,hashtag) {
-    var allNumbers = [{name:"days in the event",number:""},{name:"tweets in the dataset",number:""},{name:"authors contributed",number:""},{name:"hashtag for dataset",number:hashtag},{name:"tweets per day",number:""},{name:"average likes per tweet",number:""},{name:"average retweets per tweet",number:""},{name:"average number of tweets per author",number:""},];
-    var daysBetween = 0;
+    var allNumbers = [{name:"day span in the dataset",number:""},{name:"tweets in the dataset",number:""},{name:"authors contributed",number:""},{name:"hashtag for dataset",number:hashtag},{name:"tweets per day",number:""},{name:"average likes per tweet",number:""},{name:"average retweets per tweet",number:""},{name:"average number of tweets per author",number:""},];
+
+
     var endDate = sortDatasetAfterDate(dataset,1);
     var startDate = sortDatasetAfterDate(dataset,0);
     var calDate = new Date(startDate.realtime.getTime());
+    var calEndDate = new Date(endDate.realtime.getTime());
+    console.log(endDate.realtime);
+    console.log(startDate.realtime);
     var startDateToText = new Date();
     startDateToText.setTime(startDate.realtime.getTime());
+    var daysBetween = 0;
     for(u=0;u<1;) {
-        if(calDate.getFullYear() <= endDate.realtime.getFullYear() && calDate.getMonth() <= endDate.realtime.getMonth() && calDate.getDate() <= endDate.realtime.getDate()) {
+        if(calDate.getTime() <= calEndDate.getTime()) {
             daysBetween = daysBetween + 1;
         }
         else {
@@ -356,6 +363,9 @@ function showEntireEventTweetProgress(dataset,person) {
     var endDate = sortDatasetAfterDate(dataset,1);
     var startDate = sortDatasetAfterDate(dataset,0);
     var calDate = new Date(startDate.realtime.getTime());
+    var calEndDate = new Date(endDate.realtime.getTime());
+    console.log(endDate.realtime);
+    console.log(startDate.realtime);
     var startDateToText = new Date();
     startDateToText.setTime(startDate.realtime.getTime());
     //console.log(sortedDataset);
@@ -364,7 +374,8 @@ function showEntireEventTweetProgress(dataset,person) {
     var daysBetween = 0;
     for(u=0;u<1;) {
         //console.log(calDate + " " + endDate.realtime + "    .....");
-        if(calDate.getFullYear() <= endDate.realtime.getFullYear() && calDate.getMonth() <= endDate.realtime.getMonth() && calDate.getDate() <= endDate.realtime.getDate()) {
+        //if(calDate.getFullYear() <= calEndDate.getFullYear() && calDate.getMonth() <= calEndDate.getMonth() && calDate.getDate() <= calEndDate.getDate()) {
+        if(calDate.getTime() <= calEndDate.getTime()) {
             daysBetween = daysBetween + 1;
         }
         else {
@@ -375,6 +386,7 @@ function showEntireEventTweetProgress(dataset,person) {
     //console.log(daysBetween + " bitch.");
     //var oneDay = 24*60*60*1000;
     var diffDays = daysBetween;
+    console.log(diffDays);
     //var diffDays = Math.round(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay)));
     //console.log(Math.ceil(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay))));
     //console.log(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay)));
@@ -471,16 +483,18 @@ function showEntireEventTweetProgress(dataset,person) {
     ctx.strokeStyle = "#000000";
 
     for(y=0;y<4;y++) {
-        ctx.strokeStyle ="rgba(127,127,127, 0.3)";
         var number = [1,1.3333333,2,4];
-        ctx.beginPath();
-        ctx.moveTo(5,(280-((280-5)/number[y])));
-        ctx.lineTo(document.getElementById("canvas").width,(280-((280-5)/number[y])));
-        ctx.stroke();
-        //console.log((300-((300-5)/number[y])));
-        ctx.strokeStyle = "#000000";
-        ctx.fillText(Math.floor(highestHour/number[y]),10,(280-((280-5)/number[y]))+5);
-    }
+        if(Math.floor(highestHour/number[y]) != 0) {
+            ctx.strokeStyle ="rgba(127,127,127, 0.3)";
+            ctx.beginPath();
+            ctx.moveTo(5,(280-((280-5)/number[y])));
+            ctx.lineTo(document.getElementById("canvas").width,(280-((280-5)/number[y])));
+            ctx.stroke();
+            //console.log((300-((300-5)/number[y])));
+            ctx.strokeStyle = "#000000";
+            ctx.fillText((highestHour/number[y]).toFixed(2),10,(280-((280-5)/number[y]))+5);
+            }
+        }
 
     //console.log(hours);
     var counterForColorForArc = 0;
@@ -1005,16 +1019,19 @@ function showPersonalStatistics(dataset,person) {
     //days.reverse();
 
     for(y=0;y<4;y++) {
-        ctx.strokeStyle ="rgba(127,127,127, 0.3)";
         var number = [1,1.3333333,2,4];
-        ctx.beginPath();
-        ctx.moveTo(5,(280-((280-5)/number[y])));
-        ctx.lineTo(document.getElementById("canvas").width,(280-((280-5)/number[y])));
-        ctx.stroke();
-        //console.log((280-((280-5)/number[y])));
-        ctx.strokeStyle = "#000000";
-        ctx.fillText(Math.floor(highestHour/number[y]),10,(280-((280-5)/number[y]))+5);
-    }
+        //if(Math.floor(highestHour/number[y]) != 0) {
+            ctx.strokeStyle ="rgba(127,127,127, 0.3)";
+            ctx.beginPath();
+            ctx.moveTo(5,(280-((280-5)/number[y])));
+            ctx.lineTo(document.getElementById("canvas").width,(280-((280-5)/number[y])));
+            ctx.stroke();
+            //console.log((300-((300-5)/number[y])));
+            ctx.strokeStyle = "#000000";
+            ctx.fillText((highestHour/number[y]).toFixed(2),10,(280-((280-5)/number[y]))+5);
+            //ctx.fillText(Math.floor(highestHour/number[y]),10,(280-((280-5)/number[y]))+5);
+           // }
+        }
 
     //console.log(hours);
     var counterForColorForArc = 0;
