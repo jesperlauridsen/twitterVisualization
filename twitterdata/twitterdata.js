@@ -126,6 +126,7 @@ function generateFooter() {
 }
 
 function generateOverallDatasetStatistics(dataset,hashtag) {
+    var allNumbers = [{name:"days in the event",number:""},{name:"tweets in the dataset",number:""},{name:"authors contributed",number:""},{name:"hashtag for dataset",number:hashtag},{name:"tweets per day",number:""},{name:"average likes per tweet",number:""},{name:"average retweets per tweet",number:""},{name:"average number of tweets per author",number:""},];
     var daysBetween = 0;
     var endDate = sortDatasetAfterDate(dataset,1);
     var startDate = sortDatasetAfterDate(dataset,0);
@@ -142,10 +143,28 @@ function generateOverallDatasetStatistics(dataset,hashtag) {
         calDate.setDate(calDate.getDate() + 1);
     }
     var entireDaysEvent = daysBetween;
+    allNumbers[0].number = entireDaysEvent;
     var numberOfTweets = dataset.length;
+    allNumbers[1].number = numberOfTweets;
     var numberOfAuthors = findAllAuthors(dataset);
-    var averageTweetsPerDay = numberOfTweets/entireDaysEvent;
-
+    allNumbers[2].number = numberOfAuthors;
+    var averageTweetsPerDay = numberOfTweets/entireDaysEvent.toFixed(2);
+    allNumbers[4].number = averageTweetsPerDay;
+    var likes = 0;
+    for(o=0;o<globalData.length;o++) {
+        likes = likes + globalData[o].likes;
+    }
+    var retweets = 0;
+    for(n=0;n<globalData.length;n++) {
+        retweets = retweets + globalData[n].retweets;
+    }
+    var averageLikesPerTweet = likes/numberOfTweets.toFixed(2);
+    allNumbers[5].number = averageLikesPerTweet;
+    var averageRetweetsPerTweet = retweets/numberOfTweets.toFixed(2);
+    allNumbers[6].number = averageRetweetsPerTweet;
+    console.log(allNumbers);
+    var averageTweetsPerAuthor = numberOfTweets/numberOfAuthors;
+    allNumbers[7].number = averageTweetsPerAuthor;
     for(y=0;y<8;y++) {
         var generalStatistics = document.createElement('div');
         generalStatistics.id = "generalStatisticsContainer" + y;
