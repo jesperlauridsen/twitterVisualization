@@ -93,7 +93,6 @@ function generateSetup() {
 
     var intro = document.createElement('div');
     intro.id = "intro";
-    intro.style.height = "350px";
     //intro.style.float = "left";
     document.getElementById("introContainer").appendChild(intro);
     //canvas.style.border = "1px solid";
@@ -149,7 +148,7 @@ function generateOverallDatasetStatistics(dataset,hashtag) {
     var numberOfAuthors = findAllAuthors(dataset);
     allNumbers[2].number = numberOfAuthors;
     var averageTweetsPerDay = numberOfTweets/entireDaysEvent.toFixed(2);
-    allNumbers[4].number = averageTweetsPerDay;
+    allNumbers[4].number = averageTweetsPerDay.toFixed(2);
     var likes = 0;
     for(o=0;o<globalData.length;o++) {
         likes = likes + globalData[o].likes;
@@ -159,17 +158,34 @@ function generateOverallDatasetStatistics(dataset,hashtag) {
         retweets = retweets + globalData[n].retweets;
     }
     var averageLikesPerTweet = likes/numberOfTweets.toFixed(2);
-    allNumbers[5].number = averageLikesPerTweet;
+    allNumbers[5].number = averageLikesPerTweet.toFixed(2);
     var averageRetweetsPerTweet = retweets/numberOfTweets.toFixed(2);
-    allNumbers[6].number = averageRetweetsPerTweet;
+    allNumbers[6].number = averageRetweetsPerTweet.toFixed(2);
     console.log(allNumbers);
     var averageTweetsPerAuthor = numberOfTweets/numberOfAuthors;
-    allNumbers[7].number = averageTweetsPerAuthor;
+    allNumbers[7].number = averageTweetsPerAuthor.toFixed(2);
+    var generalStatistics = document.createElement('h3');
+    generalStatistics.id = "generalStatisticsHeadlineContainer";
+    generalStatistics.className = "generalStatisticsHeadlineContainerClass";
+    document.getElementById("intro").appendChild(generalStatistics);
+    document.getElementById("generalStatisticsHeadlineContainer").innerHTML = "General statistics for dataset";
     for(y=0;y<8;y++) {
         var generalStatistics = document.createElement('div');
         generalStatistics.id = "generalStatisticsContainer" + y;
         generalStatistics.className = "generalStatisticsClass";
         document.getElementById("intro").appendChild(generalStatistics);
+        var mainNumber = document.createElement("p");
+        mainNumber.id = "mainNumberNode" + y;
+        mainNumber.className = "mainNumberClass";
+		var mainNumberNode = document.createTextNode(allNumbers[y].number);
+		mainNumber.appendChild(mainNumberNode);
+        document.getElementById("generalStatisticsContainer"+y).appendChild(mainNumber);
+        var explanationP = document.createElement("p");
+        explanationP.id = "explanationP" + y;
+        explanationP.className = "explanationPClass";
+		var explanationNode = document.createTextNode(allNumbers[y].name);
+		explanationP.appendChild(explanationNode);
+        document.getElementById("generalStatisticsContainer"+y).appendChild(explanationP);
     }
 }
 
@@ -334,7 +350,7 @@ function showEntireEventTweetProgress(dataset,person) {
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle = "black";
-    document.getElementById("canvasHeadline").innerHTML = "All tweets in the dataset over the entire period of time.";
+    document.getElementById("canvasHeadline").innerHTML = "All tweets in the dataset over the entire period of time";
     sortedDataset = globalData.sort(function(a, b) {return parseFloat(a.realtime.getTime()) - parseFloat(b.realtime.getTime());});
     //console.log("---");
     var endDate = sortDatasetAfterDate(dataset,1);
@@ -618,7 +634,7 @@ function createFinalPersonalVisualization(person) {
     personalVisHeader.id = "personalVisHeader";
     personalVisHeader.className = "personalVisHeaderContainer";
     document.getElementById("personalVisualization").appendChild(personalVisHeader);
-    document.getElementById("personalVisHeader").innerHTML = "<h3>Personal statistics for " + person + "</h3>";
+    document.getElementById("personalVisHeader").innerHTML = "<h3>Personal statistics for " + person + "</h3><p id='resetStatistics' onClick='reshowFirstTwitterData();removePersonalStatistics();'>- reset</p>";
 
     createEntirePersonalRelationsFrame("personalVisualization",person);
 }
@@ -1353,7 +1369,7 @@ function createDiagram(div,id,info,procent,color1,color2,size,partNumber,fullNum
   	canvasForProcentagesCtx.beginPath();
  	 	canvasForProcentagesCtx.moveTo(canvasForProcentages.width / 2, canvasForProcentages.height / 2);
  			 // Arc Parameters: x, y, radius, startingAngle (radians), endingAngle (radians), antiClockwise (boolean)
-  	canvasForProcentagesCtx.arc(canvasForProcentages.width / 2, canvasForProcentages.height / 2, canvasForProcentages.height / 2, lastend, lastend + 		(Math.PI * 2 * (data[i] / myTotal)), false);
+  	canvasForProcentagesCtx.arc(canvasForProcentages.width / 2, canvasForProcentages.height / 2, canvasForProcentages.height / 2, lastend, lastend + (Math.PI * 2 * (data[i] / myTotal)), false);
   	canvasForProcentagesCtx.lineTo(canvasForProcentages.width / 2, canvasForProcentages.height / 2);
   	canvasForProcentagesCtx.fill();
   	lastend += Math.PI * 2 * (data[i] / myTotal);

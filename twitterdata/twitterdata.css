@@ -22,10 +22,6 @@ body {
     z-index:0;
 }
 
-#intro p {
-    font-size:15px;
-}
-
 #intro {
     display:block;
     width: 100%;
@@ -105,6 +101,27 @@ h3 {
     width:100%;
     height:auto;
     float:left;
+}
+
+#resetStatistics {
+    display:inline-block;
+    color:grey;
+    margin-left: 5px;
+    font-size: 12px;
+    -webkit-transition: all 500ms ease-out 0s;
+    -moz-transition: all 500ms ease-out 0s;
+    -o-transition: all 500ms ease-out 0s;
+    transition: all 500ms ease-out 0s;
+    cursor:pointer;
+
+}
+
+#resetStatistics:hover {
+    color:#FF842B;
+}
+
+.personalVisualizationContainer h3 {
+    display: inline-block;
 }
 
 .handleOfUser {
@@ -278,6 +295,50 @@ h3 {
 #personalRelationsCanvas {
     width:100%;
     height:100%;
+}
+
+
+.generalStatisticsClass {
+    width:24%;
+    min-height:150px;
+    background-color:rgba(81,70,105,0.4);
+    margin-left:0.5%;
+    margin-right:0.5%;
+    display:inline-block;
+    margin-bottom:10px;
+}
+
+.generalStatisticsClass:nth-of-type(1) {
+    margin-right:1%;
+    margin-left:0%;
+}
+
+.generalStatisticsClass:nth-of-type(5) {
+    margin-right:1%;
+    margin-left:0%;
+}
+
+.generalStatisticsClass:nth-of-type(4) {
+    margin-right:0%;
+    margin-left:1%;
+}
+
+.generalStatisticsClass:nth-of-type(8) {
+    margin-right:0%;
+    margin-left:1%;
+}
+
+.mainNumberClass {
+    font-size:32px;
+    padding-top:10px;
+    text-align:center;
+    color: #FF842B;
+    margin-bottom:-5px;
+}
+
+.explanationPClass {
+    text-align:center;
+    color:white;
 }
 
 ::-webkit-scrollbar {
