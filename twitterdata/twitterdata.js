@@ -35,7 +35,7 @@ function loadTwitterData() {
                    arrayOfDataObjects.push(object);
                 }
                 globalData = arrayOfDataObjects;
-                console.log(globalData);
+                //console.log(globalData);
                 dataInjected = 1;
                 showFirstTwitterData();
             }
@@ -74,6 +74,8 @@ function sortDatasetAfterDate(dataset,argument) {
     var timeSortedDataset = dataset;
     timeSortedDataset.sort(function(a, b) {return parseFloat(a.realtime.getTime()) - parseFloat(b.realtime.getTime());});
     console.log(timeSortedDataset);
+    console.log("startdate: " + timeSortedDataset[0].realtime);
+    console.log("enddate: " + timeSortedDataset[timeSortedDataset.length-1].realtime);
     if(argument === 0) {
         //console.log("startdate: " + timeSortedDataset[0].realtime);
         return timeSortedDataset[0];
@@ -232,8 +234,6 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
         }
         ctx.fillText(textNumber,arrayOfDividers[i]-5,295);
     }
-    //10 pre-set colors. Enough for now, yes?
-    var presetColors= ["rgba(255, 0, 255, 0.5)","rgba(0, 0, 255, 0.5)","rgba(0, 255, 255, 0.5)","rgba(0, 128, 128, 0.5)","rgba(0, 255, 0, 0.5)","rgba(255, 255, 0, 0.5)","rgba(255, 0, 0, 0.5)","rgba(192, 192, 192, 0.5)","rgba(0, 0, 0, 0.5)","rgba(255,69,0, 0.5)"];
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     var days = [];
@@ -301,7 +301,6 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
         arrayOfDividers.push(seperateNumber);
     }
     for(n=0;n<hours.length;n++) {
-        ctx.fillStyle = presetColors[n];
         ctx.font = "16px Arial";
         ctx.fillText(days[n][0].realtime.getDate() + "/" + days[n][0].realtime.getMonth() + "-" +days[n][0].realtime.getFullYear() + " (" + days[n].length + " tweets)" ,canvas.width-185,20 +(n*20));
         for(k=0;k<hours[n].length;k++) {
@@ -314,8 +313,6 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
             }
             var hour = k + 1;
             //console.log("day: " + n + " hour: " + hour + " number of tweets: " + hours[n][k] + " height: " + heightZ);
-            ctx.strokeStyle = presetColors[n];
-            ctx.fillStyle = presetColors[n];
             ctx.beginPath();
             //console.log(arrayOfDividers[k] + " " + heightZ + " " + hours[n][k]);
             ctx.arc(arrayOfDividers[k],heightZ,2,0,2*Math.PI);
@@ -341,7 +338,6 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
             else {
                 HX = 280 - ((hours[n][k+1] / highestHour) * 275);
             }
-            ctx.strokeStyle = presetColors[n];
             ctx.beginPath();
             ctx.moveTo(arrayOfDividers[k],HZ);
             ctx.lineTo(arrayOfDividers[k+1],HX);
@@ -352,7 +348,6 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
 }
 
 function showEntireEventTweetProgress(dataset,person) {
-    var presetColors= ["rgba(255, 0, 255, 0.5)","rgba(0, 0, 255, 0.5)","rgba(0, 255, 255, 0.5)","rgba(0, 128, 128, 0.5)","rgba(0, 255, 0, 0.5)","rgba(255, 255, 0, 0.5)","rgba(255, 0, 0, 0.5)","rgba(192, 192, 192, 0.5)","rgba(0, 0, 0, 0.5)","rgba(255,69,0, 0.5)"];
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -368,6 +363,8 @@ function showEntireEventTweetProgress(dataset,person) {
     console.log(startDate.realtime);
     var startDateToText = new Date();
     startDateToText.setTime(startDate.realtime.getTime());
+    var endDateToText = new Date();
+    endDateToText.setTime(endDate.realtime.getTime());
     //console.log(sortedDataset);
     //console.log(startDate);
     //console.log(endDate);
@@ -386,33 +383,19 @@ function showEntireEventTweetProgress(dataset,person) {
     //console.log(daysBetween + " bitch.");
     //var oneDay = 24*60*60*1000;
     var diffDays = daysBetween;
-    console.log(diffDays);
     //var diffDays = Math.round(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay)));
     //console.log(Math.ceil(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay))));
     //console.log(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay)));
     //console.log(startDate.realtime + " " + endDate.realtime);
     //console.log(diffDays);
-    var difference = canvas.width/diffDays;
-    var singlePoint = (canvas.width/diffDays)/24;
-    var startSinglePoint = singlePoint/2;
-    for(u=0;u<diffDays;u++) {
-        for(y=1;y<24;y++) {
-            ctx.beginPath();
-            ctx.moveTo((singlePoint*y)+(u*difference),281);
-            ctx.lineTo((singlePoint*y)+(u*difference),283);
-            ctx.stroke();
-            //if(y%2 == 0) {
-               ctx.font="7px Trebuchet MS";
-               ctx.fillStyle="white";
-                if(y < 10) {
-                    ctx.fillText(y,(singlePoint*y)+(u*difference)-3,290);
-                }
-                else {
-                    ctx.fillText(y,(singlePoint*y)+(u*difference)-5,290);
-                }
-            //}
-        }
-    }
+    console.log("days " + diffDays);
+    console.log(canvas.width);
+    var difference = (canvas.width-10)/diffDays;
+    var singlePoint = ((canvas.width-10)/diffDays)/24;
+    console.log(singlePoint);
+    // -- SET UP DISPLAY!
+    ctx.fillStyle="white";
+    ctx.strokeStyle="white";
     ctx.beginPath();
     ctx.moveTo(5,5);
     ctx.lineTo(5,280);
@@ -421,21 +404,55 @@ function showEntireEventTweetProgress(dataset,person) {
     ctx.moveTo(5,280);
     ctx.lineTo(canvas.width-5,280);
     ctx.stroke();
-    ctx.font="10px Trebuchet MS";
-    var monthToDisplay = startDateToText.getMonth() + 1;
-    ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,0,295);
-    startDateToText.setDate(startDateToText.getDate()+1);
-    for(y=1;y<diffDays;y++) {
+
+    // -- WRITE IN DATES (NOT READY YET)
+    //ctx.font="10px Trebuchet MS";
+    //var startMonthToDisplay = startDateToText.getMonth() + 1;
+    //ctx.fillText(startDateToText.getDate() + "/" + startMonthToDisplay,0,295);
+    //startDateToText.setDate(startDateToText.getDate()+1);
+    //var endMonthToDisplay = endDateToText.getMonth() + 1;
+    //ctx.fillText(endDateToText.getDate() + "/" + endMonthToDisplay,canvas.width-25,295);
+   /* for(y=1;y<diffDays;y++) {
         ctx.strokeStyle = "#000000";
         ctx.beginPath();
         ctx.moveTo(Math.floor(y*difference),280);
         ctx.lineTo(Math.floor(y*difference),285);
         ctx.stroke();
         ctx.font="10px Trebuchet MS";
-        ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,y*difference-10,295);
+        //ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,y*difference-10,295);
         startDateToText.setDate(startDateToText.getDate()+1);
         monthToDisplay = startDateToText.getMonth() + 1;
+    } */
+
+    var arrayOfDays = [];
+    var countingDate = new Date(startDate.realtime.getTime());
+    console.log("startdate: " + countingDate);
+    var arrayEndDate = new Date(endDate.realtime.getFullYear(),endDate.realtime.getMonth(),endDate.realtime.getDate(),"23","59");
+    console.log("enddate: " + arrayEndDate);
+    counter = 0;
+    for(j=0;j<1;j) {
+        if(countingDate.getTime() < arrayEndDate.getTime()) {
+            var specificDate = countingDate;
+            var specificMonth = specificDate.getMonth()+1;
+            var day = {
+                0:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0,11:0,12:0,13:0,14:0,15:0,16:0,17:0,18:0,19:0,20:0,21:0,22:0,23:0,
+                date:specificDate.getDate() + "/" + specificMonth + "-" + specificDate.getFullYear(),
+                canvasPoint:0,
+            }
+            arrayOfDays.push(day);
+            countingDate.setDate(countingDate.getDate()+1);
+            counter = counter + 1;
+        }
+        else {
+            j = 1;
+        }
     }
+    console.log("HERE! " + counter);
+    console.log(arrayOfDays);
+
+    var number = 4;
+    console.log("TEST!! " + arrayOfDays[32][number]);
+
     var days = [];
     var hours = [];
     var existing = 0;
@@ -498,8 +515,8 @@ function showEntireEventTweetProgress(dataset,person) {
 
     //console.log(hours);
     var counterForColorForArc = 0;
+    console.log(hours);
     for(n=0;n<hours.length;n++) {
-        ctx.fillStyle = presetColors[n];
         ctx.font = "16px Trebuchet MS";
         for(k=0;k<hours[n].length;k++) {
             var heightZ;
@@ -518,7 +535,9 @@ function showEntireEventTweetProgress(dataset,person) {
             ctx.fillStyle = colorForArc;
             ctx.beginPath();
             //console.log(arrayOfDividers[k] + " " + heightZ + " " + hours[n][k]);
-            ctx.arc((singlePoint*(k))+((n)*difference)+(singlePoint/2),heightZ,4,0,2*Math.PI);
+            //MAKE CIRCLE!
+            //ctx.arc((singlePoint*(k))+((n)*difference)+(singlePoint/2),heightZ,4,0,2*Math.PI);
+
             ctx.stroke();
             ctx.closePath();
             ctx.fill();
@@ -529,6 +548,7 @@ function showEntireEventTweetProgress(dataset,person) {
     var counterForColor = 0;
     for(n=0;n<hours.length;n++) {
         for(k=0;k<hours[n].length;k++) {
+            counterForColor = counterForColor + 1;
             var draw = 1;
             var HZ;
             var HX;
@@ -559,15 +579,17 @@ function showEntireEventTweetProgress(dataset,person) {
             var color = "rgba(" + color1 + ", 127, " + color2 + " , 1)";
             //console.log(color + "heya");
             ctx.strokeStyle = color;
-            //ctx.strokeStyle = presetColors[n];
             ctx.beginPath();
-            ctx.moveTo((singlePoint*(k))+((n)*difference)+(singlePoint/2),HZ);
-            ctx.lineTo((singlePoint*(k+1))+((n)*difference)+(singlePoint/2),HX);
+            ctx.moveTo(5+(singlePoint*(counterForColor)),HZ);
+            ctx.lineTo(5+(singlePoint*(counterForColor+1)),HX);
+            //ctx.moveTo((singlePoint*(k))+((n)*difference)+(singlePoint/2)+5,HZ);
+            //ctx.lineTo((singlePoint*(k+1))+((n)*difference)+(singlePoint/2)+5,HX);
             ctx.stroke();
-            counterForColor = counterForColor + 1;
             }
         }
+        console.log(k);
     }
+    console.log(counterForColor + " " + counterForColor*singlePoint);
 
 }
 
@@ -960,7 +982,6 @@ function showPersonalStatistics(dataset,person) {
     startDateToText.setTime(startDate.realtime.getTime());
     var difference = canvas.width/diffDays;
     var singlePoint = (canvas.width/diffDays)/24;
-    var startSinglePoint = singlePoint/2;
     for(u=0;u<diffDays;u++) {
         for(y=1;y<24;y++) {
             ctx.strokeStyle = "#000000";
@@ -972,15 +993,16 @@ function showPersonalStatistics(dataset,person) {
                ctx.font="7px Trebuchet MS";
                ctx.fillStyle="white";
                 if(y < 10) {
-                    ctx.fillText(y,(singlePoint*y)+(u*difference)-3,290);
+                    //ctx.fillText(y,(singlePoint*y)+(u*difference)-3,290);
                 }
                 else {
-                    ctx.fillText(y,(singlePoint*y)+(u*difference)-5,290);
+                    //ctx.fillText(y,(singlePoint*y)+(u*difference)-5,290);
                 }
             //}
         }
     }
-    ctx.strokeStyle = "#000000";
+    ctx.strokeStyle = "white";
+    ctx.fillStyle = "white";
     ctx.beginPath();
     ctx.moveTo(5,5);
     ctx.lineTo(5,280);
@@ -1001,7 +1023,7 @@ function showPersonalStatistics(dataset,person) {
         ctx.lineTo(Math.floor(y*difference),285);
         ctx.stroke();
         ctx.font="10px Trebuchet MS";
-        ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,y*difference-10,295);
+        //ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,y*difference-10,295);
         startDateToText.setDate(startDateToText.getDate()+1);
         monthToDisplay = startDateToText.getMonth() + 1;
     }
@@ -1055,7 +1077,7 @@ function showPersonalStatistics(dataset,person) {
             ctx.fillStyle = colorForArc;
             ctx.beginPath();
             //console.log(arrayOfDividers[k] + " " + heightZ + " " + hours[n][k]);
-            ctx.arc((singlePoint*(k))+((n)*difference)+(singlePoint/2),heightZ,4,0,2*Math.PI);
+            //ctx.arc((singlePoint*(k))+((n)*difference)+(singlePoint/2),heightZ,4,0,2*Math.PI);
             ctx.stroke();
             ctx.closePath();
             ctx.fill();
@@ -1096,10 +1118,9 @@ function showPersonalStatistics(dataset,person) {
             var color = "rgba(" + color1 + ", 127, " + color2 + " , 1)";
             //console.log(color + "heya");
             ctx.strokeStyle = color;
-            //ctx.strokeStyle = presetColors[n];
             ctx.beginPath();
-            ctx.moveTo((singlePoint*(k))+((n)*difference)+(singlePoint/2),HZ);
-            ctx.lineTo((singlePoint*(k+1))+((n)*difference)+(singlePoint/2),HX);
+            ctx.moveTo((singlePoint*(k))+((n)*difference)+(singlePoint/2)+5,HZ);
+            ctx.lineTo((singlePoint*(k+1))+((n)*difference)+(singlePoint/2)+5,HX);
             ctx.stroke();
             counterForColor = counterForColor + 1;
             }
