@@ -38,6 +38,7 @@ function loadTwitterData(url,hashtag) {
                 globalData = arrayOfDataObjects;
                 //console.log(globalData);
                 dataInjected = 1;
+                document.body.innerHTML = "";
                 showFirstTwitterData(hashtag);
             }
         }
@@ -167,11 +168,20 @@ function generateOverallDatasetStatistics(dataset,hashtag) {
     //console.log(allNumbers);
     var averageTweetsPerAuthor = numberOfTweets/numberOfAuthors;
     allNumbers[7].number = averageTweetsPerAuthor.toFixed(2);
+
     var generalStatistics = document.createElement('h3');
     generalStatistics.id = "generalStatisticsHeadlineContainer";
     generalStatistics.className = "generalStatisticsHeadlineContainerClass";
     document.getElementById("intro").appendChild(generalStatistics);
     document.getElementById("generalStatisticsHeadlineContainer").innerHTML = "General statistics for dataset";
+
+    var generalStatisticsMenuContainer = document.createElement('div');
+    generalStatisticsMenuContainer.id = "generalStatisticsMenuContainer";
+    generalStatisticsMenuContainer.className = "generalStatisticsMenuContainerClass";
+    document.getElementById("intro").appendChild(generalStatisticsMenuContainer);
+    document.getElementById("generalStatisticsMenuContainer").innerHTML = "menu <br><br><ul style='text-align:left;'><li id='option1'>#DST4L</li><li id='option2'>#ultratwitteragf</li></ul>";
+    document.getElementById("option1").onclick=function(){loadTwitterData('finaltweeterdata-sorted2.csv','#DST4L');};
+    document.getElementById("option2").onclick=function(){loadTwitterData('try2.csv','#ultratwitteragf');};
     for(y=0;y<8;y++) {
         var generalStatistics = document.createElement('div');
         generalStatistics.id = "generalStatisticsContainer" + y;
