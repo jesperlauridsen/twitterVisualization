@@ -1,10 +1,11 @@
 var globalData;
 var dataInjected = 0;
 
-function loadTwitterData() {
+function loadTwitterData(url,hashtag) {
     var rawFile = new XMLHttpRequest();
+    rawFile.open("GET",url,true);
     //rawFile.open("GET", "finaltweeterdata-sorted2.csv", true);
-    rawFile.open("GET", "try2.csv", true);
+    //rawFile.open("GET", "try2.csv", true);
     rawFile.onreadystatechange = function ()
     {
         if(rawFile.readyState === 4)
@@ -28,7 +29,7 @@ function loadTwitterData() {
                         realtime:tweetTime,
                         likes:Number(singleTweetArray[5]),
                         retweets:Number(singleTweetArray[6]),
-                    }
+                    };
                     if(y===1) {
                         //console.log(object.realtime + " " + object.tweet);
                     }
@@ -37,17 +38,17 @@ function loadTwitterData() {
                 globalData = arrayOfDataObjects;
                 //console.log(globalData);
                 dataInjected = 1;
-                showFirstTwitterData();
+                showFirstTwitterData(hashtag);
             }
         }
     }
     rawFile.send(null);
 }
 
-function showFirstTwitterData() {
+function showFirstTwitterData(hashtag) {
     sanatizeData(globalData);
     generateSetup();
-    generateOverallDatasetStatistics(globalData,"#DST4L");
+    generateOverallDatasetStatistics(globalData,hashtag);
     //introductonToStatistics(globalData,"DST4L");
     creatingTweetOverview(globalData);
     showEntireEventTweetProgress(globalData);
@@ -73,15 +74,10 @@ function reshowFirstTwitterData() {
 function sortDatasetAfterDate(dataset,argument) {
     var timeSortedDataset = dataset;
     timeSortedDataset.sort(function(a, b) {return parseFloat(a.realtime.getTime()) - parseFloat(b.realtime.getTime());});
-    console.log(timeSortedDataset);
-    console.log("startdate: " + timeSortedDataset[0].realtime);
-    console.log("enddate: " + timeSortedDataset[timeSortedDataset.length-1].realtime);
     if(argument === 0) {
-        //console.log("startdate: " + timeSortedDataset[0].realtime);
         return timeSortedDataset[0];
     }
     else if(argument === 1) {
-        //console.log("enddate: " + timeSortedDataset[timeSortedDataset.length-1].realtime);
         return timeSortedDataset[timeSortedDataset.length-1];
     }
     else {
@@ -136,8 +132,6 @@ function generateOverallDatasetStatistics(dataset,hashtag) {
     var startDate = sortDatasetAfterDate(dataset,0);
     var calDate = new Date(startDate.realtime.getTime());
     var calEndDate = new Date(endDate.realtime.getTime());
-    console.log(endDate.realtime);
-    console.log(startDate.realtime);
     var startDateToText = new Date();
     startDateToText.setTime(startDate.realtime.getTime());
     var daysBetween = 0;
@@ -170,7 +164,7 @@ function generateOverallDatasetStatistics(dataset,hashtag) {
     allNumbers[5].number = averageLikesPerTweet.toFixed(2);
     var averageRetweetsPerTweet = retweets/numberOfTweets.toFixed(2);
     allNumbers[6].number = averageRetweetsPerTweet.toFixed(2);
-    console.log(allNumbers);
+    //console.log(allNumbers);
     var averageTweetsPerAuthor = numberOfTweets/numberOfAuthors;
     allNumbers[7].number = averageTweetsPerAuthor.toFixed(2);
     var generalStatistics = document.createElement('h3');
@@ -348,30 +342,28 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
 }
 
 function showEntireEventTweetProgress(dataset,person) {
+    removePersonalStatistics();
+    // -- Set up the info for the canvas
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = "black";
-    document.getElementById("canvasHeadline").innerHTML = "All tweets in the dataset over the entire period of time";
+    if(person != undefined) {
+        document.getElementById("canvasHeadline").innerHTML = "All tweets in the dataset from " + person + " over the entire period of time";
+    }
+    else {
+        document.getElementById("canvasHeadline").innerHTML = "All tweets in the dataset over the entire period of time";
+    }
     sortedDataset = globalData.sort(function(a, b) {return parseFloat(a.realtime.getTime()) - parseFloat(b.realtime.getTime());});
-    //console.log("---");
     var endDate = sortDatasetAfterDate(dataset,1);
     var startDate = sortDatasetAfterDate(dataset,0);
     var calDate = new Date(startDate.realtime.getTime());
     var calEndDate = new Date(endDate.realtime.getTime());
-    console.log(endDate.realtime);
-    console.log(startDate.realtime);
     var startDateToText = new Date();
     startDateToText.setTime(startDate.realtime.getTime());
     var endDateToText = new Date();
     endDateToText.setTime(endDate.realtime.getTime());
-    //console.log(sortedDataset);
-    //console.log(startDate);
-    //console.log(endDate);
     var daysBetween = 0;
     for(u=0;u<1;) {
-        //console.log(calDate + " " + endDate.realtime + "    .....");
-        //if(calDate.getFullYear() <= calEndDate.getFullYear() && calDate.getMonth() <= calEndDate.getMonth() && calDate.getDate() <= calEndDate.getDate()) {
         if(calDate.getTime() <= calEndDate.getTime()) {
             daysBetween = daysBetween + 1;
         }
@@ -380,20 +372,9 @@ function showEntireEventTweetProgress(dataset,person) {
         }
         calDate.setDate(calDate.getDate() + 1);
     }
-    //console.log(daysBetween + " bitch.");
-    //var oneDay = 24*60*60*1000;
     var diffDays = daysBetween;
-    //var diffDays = Math.round(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay)));
-    //console.log(Math.ceil(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay))));
-    //console.log(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay)));
-    //console.log(startDate.realtime + " " + endDate.realtime);
-    //console.log(diffDays);
-    console.log("days " + diffDays);
-    console.log(canvas.width);
     var difference = (canvas.width-10)/diffDays;
-    var singlePoint = ((canvas.width-10)/diffDays)/24;
-    console.log(singlePoint);
-    // -- SET UP DISPLAY!
+    var singlePoint = ((canvas.width-10))/((24*diffDays)-1);
     ctx.fillStyle="white";
     ctx.strokeStyle="white";
     ctx.beginPath();
@@ -405,39 +386,74 @@ function showEntireEventTweetProgress(dataset,person) {
     ctx.lineTo(canvas.width-5,280);
     ctx.stroke();
 
-    // -- WRITE IN DATES (NOT READY YET)
-    //ctx.font="10px Trebuchet MS";
-    //var startMonthToDisplay = startDateToText.getMonth() + 1;
-    //ctx.fillText(startDateToText.getDate() + "/" + startMonthToDisplay,0,295);
-    //startDateToText.setDate(startDateToText.getDate()+1);
-    //var endMonthToDisplay = endDateToText.getMonth() + 1;
-    //ctx.fillText(endDateToText.getDate() + "/" + endMonthToDisplay,canvas.width-25,295);
-   /* for(y=1;y<diffDays;y++) {
-        ctx.strokeStyle = "#000000";
+    // -- Write dates on canvas to give a sense of time on timeline
+    ctx.font="10px Trebuchet MS";
+    if(daysBetween < 31) {
+        for(y=0;y<diffDays;y++) {
+        ctx.strokeStyle = "white";
         ctx.beginPath();
-        ctx.moveTo(Math.floor(y*difference),280);
-        ctx.lineTo(Math.floor(y*difference),285);
+        ctx.moveTo(Math.floor(y*difference)+5,280);
+        ctx.lineTo(Math.floor(y*difference)+5,285);
         ctx.stroke();
         ctx.font="10px Trebuchet MS";
-        //ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,y*difference-10,295);
+        var monthToDisplay = startDateToText.getMonth() + 1;
+        ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,y*difference,295);
         startDateToText.setDate(startDateToText.getDate()+1);
-        monthToDisplay = startDateToText.getMonth() + 1;
-    } */
+        }
+    }
+    else {
+        for(y=0;y<diffDays;y++) {
+            if(y % Math.round(diffDays/30) === 0) {
+                ctx.strokeStyle = "white";
+                ctx.beginPath();
+                ctx.moveTo(Math.floor(y*difference)+5,280);
+                ctx.lineTo(Math.floor(y*difference)+5,285);
+                ctx.stroke();
+                ctx.font="10px Trebuchet MS";
+                var monthToDisplay = startDateToText.getMonth() + 1;
+                ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,y*difference,295);
+            }
+            var monthToDisplay = startDateToText.getMonth() + 1;
+            startDateToText.setDate(startDateToText.getDate()+1);
+        }
 
+    }
     var arrayOfDays = [];
     var countingDate = new Date(startDate.realtime.getTime());
-    console.log("startdate: " + countingDate);
     var arrayEndDate = new Date(endDate.realtime.getFullYear(),endDate.realtime.getMonth(),endDate.realtime.getDate(),"23","59");
-    console.log("enddate: " + arrayEndDate);
     counter = 0;
+    // -- Create timeline objects
     for(j=0;j<1;j) {
         if(countingDate.getTime() < arrayEndDate.getTime()) {
             var specificDate = countingDate;
             var specificMonth = specificDate.getMonth()+1;
             var day = {
-                0:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0,11:0,12:0,13:0,14:0,15:0,16:0,17:0,18:0,19:0,20:0,21:0,22:0,23:0,
-                date:specificDate.getDate() + "/" + specificMonth + "-" + specificDate.getFullYear(),
-                canvasPoint:0,
+                hour0:0,
+                hour1:0,
+                hour2:0,
+                hour3:0,
+                hour4:0,
+                hour5:0,
+                hour6:0,
+                hour7:0,
+                hour8:0,
+                hour9:0,
+                hour10:0,
+                hour11:0,
+                hour12:0,
+                hour13:0,
+                hour14:0,
+                hour15:0,
+                hour16:0,
+                hour17:0,
+                hour18:0,
+                hour19:0,
+                hour20:0,
+                hour21:0,
+                hour22:0,
+                hour23:0,
+                tDate:specificDate.getDate() + "/" + specificMonth + "-" + specificDate.getFullYear(),
+                tCanvasPoint:0,
             }
             arrayOfDays.push(day);
             countingDate.setDate(countingDate.getDate()+1);
@@ -447,150 +463,168 @@ function showEntireEventTweetProgress(dataset,person) {
             j = 1;
         }
     }
-    console.log("HERE! " + counter);
-    console.log(arrayOfDays);
-
-    var number = 4;
-    console.log("TEST!! " + arrayOfDays[32][number]);
-
-    var days = [];
-    var hours = [];
-    var existing = 0;
-    for(n=0;n<dataset.length;n++) {
-        existing = 0;
-        for(y=0;y<days.length;y++) {
-            if(dataset[n].realtime.getDate() === days[y][0].realtime.getDate() && dataset[n].realtime.getMonth() === days[y][0].realtime.getMonth() && dataset[n].realtime.getFullYear() === days[y][0].realtime.getFullYear()) {
-                existing = 1;
-                days[y].push(dataset[n])
-            }
-        }
-        if(existing === 0) {
-            //console.log("NEW! " + dataset[n].realtime + " " + dataset[n].tweet + " " + dataset[n].datatime);
-            days[days.length] = new Array();
-            days[days.length-1].push(dataset[n]);
+    // -- plot in data from the dataset to the timeline objects
+    if(person === undefined) {
+        for(h=0;h<dataset.length;h++) {
+            var number = "hour" + dataset[h].realtime.getHours();
+            arrayOfDays[daysBetweenFunction(startDate.realtime, dataset[h].realtime)][number] = arrayOfDays[daysBetweenFunction(startDate.realtime, dataset[h].realtime)][number] + 1;
         }
     }
-    //console.log(days);
-    days.reverse();
-    for(u=0;u<days.length;u++) {
-        hours[hours.length] = new Array();
-        for(h=0;h<24;h++) {
-        var value = 0;
-        hours[hours.length-1].push(value);
-    }
-        for(i=0;i<days[u].length;i++) {
-            var newValue = hours[hours.length-1][days[u][i].realtime.getHours()] + 1;
-            hours[hours.length-1][days[u][i].realtime.getHours()] = newValue;
-            //console.log(days[u][i].realtime.getHours());
-            }
+    else {
+        for(h=0;h<dataset.length;h++) {
+            if(person === dataset[h].handle) {
+                var number = "hour" + dataset[h].realtime.getHours();
+                arrayOfDays[daysBetweenFunction(startDate.realtime, dataset[h].realtime)][number] = arrayOfDays[daysBetweenFunction(startDate.realtime, dataset[h].realtime)][number] + 1;
+                }
         }
-
-    var highestHour = 0;
+    }
+    // -- Find the highest point
+    var highNumb = 0;
     var totalNumberOfEntries = 0;
-    for(n=0;n<hours.length;n++) {
-        for(k=0;k<hours[n].length;k++) {
-            totalNumberOfEntries = totalNumberOfEntries + 1;
-            if(hours[n][k] >= highestHour) {
-                highestHour = hours[n][k];
+    for(j=0;j<Object.keys(arrayOfDays).length;j++) {
+        for(h=0;h<Object.keys(arrayOfDays[j]).length-2;h++) {
+             var totalNumberOfEntries = totalNumberOfEntries + 1;
+            if(arrayOfDays[j][Object.keys(arrayOfDays[j])[h]] > highNumb) {
+                highNumb = arrayOfDays[j][Object.keys(arrayOfDays[j])[h]];
             }
         }
     }
-    hours.reverse();
-    days.reverse();
     ctx.strokeStyle = "#000000";
 
+    // -- Write lines to explain dimensions in the canvas
     for(y=0;y<4;y++) {
         var number = [1,1.3333333,2,4];
-        if(Math.floor(highestHour/number[y]) != 0) {
+        if(Math.floor(highNumb/number[y]) != 0) {
             ctx.strokeStyle ="rgba(127,127,127, 0.3)";
             ctx.beginPath();
             ctx.moveTo(5,(280-((280-5)/number[y])));
             ctx.lineTo(document.getElementById("canvas").width,(280-((280-5)/number[y])));
             ctx.stroke();
-            //console.log((300-((300-5)/number[y])));
             ctx.strokeStyle = "#000000";
-            ctx.fillText((highestHour/number[y]).toFixed(2),10,(280-((280-5)/number[y]))+5);
+            ctx.fillText((highNumb/number[y]).toFixed(2),10,(280-((280-5)/number[y]))+5);
             }
         }
-
-    //console.log(hours);
-    var counterForColorForArc = 0;
-    console.log(hours);
-    for(n=0;n<hours.length;n++) {
-        ctx.font = "16px Trebuchet MS";
-        for(k=0;k<hours[n].length;k++) {
-            var heightZ;
-            if(hours[n][k] === 0) {
-                heightZ = 280;
-            }
-            else {
-                heightZ = 280 - ((hours[n][k] / highestHour) * 275);
-            }
-            var hour = k + 1;
-            //console.log("day: " + n + " hour: " + hour + " number of tweets: " + hours[n][k] + " height: " + heightZ);
-            var color1 = Math.round((255/totalNumberOfEntries)*counterForColorForArc);
-            var color2 = Math.round(255 - ((255/totalNumberOfEntries)*counterForColorForArc));
-            var colorForArc = "rgba(" + color1 + ", 127, " + color2 + " , 0.4)";
-            ctx.strokeStyle = colorForArc;
-            ctx.fillStyle = colorForArc;
-            ctx.beginPath();
-            //console.log(arrayOfDividers[k] + " " + heightZ + " " + hours[n][k]);
-            //MAKE CIRCLE!
-            //ctx.arc((singlePoint*(k))+((n)*difference)+(singlePoint/2),heightZ,4,0,2*Math.PI);
-
-            ctx.stroke();
-            ctx.closePath();
-            ctx.fill();
-            counterForColorForArc = counterForColorForArc + 1;
-            //console.log("painting?");
-        }
-    }
+    // -- plot in the entire graph
     var counterForColor = 0;
-    for(n=0;n<hours.length;n++) {
-        for(k=0;k<hours[n].length;k++) {
-            counterForColor = counterForColor + 1;
+    console.log(arrayOfDays);
+    for(l=0;l<Object.keys(arrayOfDays).length;l++) {
+         for(x=0;x<Object.keys(arrayOfDays[l]).length-2;x++) {
             var draw = 1;
             var HZ;
             var HX;
-            if(hours[n][k] === 0) {
+            if(arrayOfDays[l][Object.keys(arrayOfDays[l])[x]] === 0) {
                 HZ = 280;
             }
             else {
-                HZ = 280 - ((hours[n][k] / highestHour) * 275);
+                HZ = 280 - ((arrayOfDays[l][Object.keys(arrayOfDays[l])[x]] / highNumb) * 275);
             }
-            if(hours[n][k+1] === 0) {
+            if(arrayOfDays[l][Object.keys(arrayOfDays[l])[x+1]] === 0) {
                 HX = 280;
             }
-            else if(hours[n][k+1] === undefined) {
+            else if(x === 23) {
                 try {
-                HX = 280 - ((hours[n+1][0] / highestHour) * 275);
-                //console.log(hours[n+1][0] + " " + HX);
+                HX = 280 - ((arrayOfDays[l+1][Object.keys(arrayOfDays[l+1])[0]] / highNumb) * 275);
                 }
                 catch(err) {
                    draw = 0;
                 }
             }
             else {
-                HX = 280 - ((hours[n][k+1] / highestHour) * 275);
+                HX = 280 - ((arrayOfDays[l][Object.keys(arrayOfDays[l])[x+1]] / highNumb) * 275);
             }
             if(draw === 1) {
             var color1 = Math.round((255/totalNumberOfEntries)*counterForColor);
             var color2 = Math.round(255 - ((255/totalNumberOfEntries)*counterForColor));
             var color = "rgba(" + color1 + ", 127, " + color2 + " , 1)";
-            //console.log(color + "heya");
             ctx.strokeStyle = color;
             ctx.beginPath();
+            //console.log(l + "  " + x + " x: " + 5+(singlePoint*(counterForColor)) + " y: " + HZ + " HZ");
+            //console.log(l + "  " + x + " x: " + 5+(singlePoint*(counterForColor+1)) + " y: " + HX);
             ctx.moveTo(5+(singlePoint*(counterForColor)),HZ);
             ctx.lineTo(5+(singlePoint*(counterForColor+1)),HX);
-            //ctx.moveTo((singlePoint*(k))+((n)*difference)+(singlePoint/2)+5,HZ);
-            //ctx.lineTo((singlePoint*(k+1))+((n)*difference)+(singlePoint/2)+5,HX);
             ctx.stroke();
+            var colorForArc = "rgba(" + color1 + ", 127, " + color2 + " , 0.4)";
+            ctx.strokeStyle = colorForArc;
+            ctx.fillStyle = colorForArc;
+            ctx.beginPath();
+            if(HX != 280) {
+                ctx.arc(5+(singlePoint*(counterForColor+1)),HX,2,0,2*Math.PI);
+            }
+            ctx.stroke();
+            ctx.closePath();
+            ctx.fill();
+            }
+             counterForColor = counterForColor + 1;
+        }
+    }
+    console.log(counterForColor);
+    console.log(arrayOfDays);
+    if(person != undefined) {
+        mostPersonalLikedTweets(globalData,person,"field2");
+        mostPersonalRetweetedTweets(globalData,person,"field3");
+        createFinalPersonalVisualization(person);
+        personalOutwardRelations(dataset,person);
+    }
+    canvas.addEventListener('mouseout', function(evt) {
+        try {
+            document.getElementById("displayOfData").style.display = "none";
+        }
+        catch(err) {
+
+        }
+    });
+
+    canvas.addEventListener('mousemove', function(evt) {
+        var rect = canvas.getBoundingClientRect();
+        var x = evt.clientX - rect.left;
+        var y = evt.clientY - rect.top;
+        var counter = ((document.getElementById("canvasContainer").clientWidth-10)/(diffDays*24));
+        var finalC = Math.floor((x)/(document.getElementById("canvasContainer").clientWidth-10)*(diffDays*24));
+        var ffs = parseInt((finalC * counter))+parseInt(5);
+        //console.log(finalC + " " + counter + " " + ffs);
+        if(document.getElementById("displayOfData") === null) {
+             var displayOfData = document.createElement('div');
+             displayOfData.id = "displayOfData";
+             displayOfData.className = "displayOfDataClass";
+             document.getElementById("canvasHeadline").parentNode.appendChild(displayOfData);
+             document.getElementById("displayOfData").style.left = ffs - 35;
+             document.getElementById("displayOfData").style.bottom = -y-105; //document.getElementById("intro").clientHeight + document.getElementById("canvasHeadline").clientHeight - (y+25);
+        }
+        else {
+             document.getElementById("displayOfData").style.left = ffs - 35;
+             document.getElementById("displayOfData").style.bottom = -y-105; //document.getElementById("intro").clientHeight + document.getElementById("canvasHeadline").clientHeight - (y+25);
+        }
+        if(document.getElementById("displayOfData").style.display === "none") {
+            document.getElementById("displayOfData").style.display = "block";
+        }
+        var figureOut = finalC;
+        var figureOutHours = 0;
+        var figureOutDays = 0;
+        for (o = 0; o < 1;) {
+            if (figureOut < diffDays*24) {
+                if (figureOut > 23) {
+                    figureOutDays = figureOutDays + 1;
+                    figureOut = figureOut - 24;
+                } else {
+                    o = 1;
+                    figureOutHours = figureOut;
+                }
+            }
+            else {
+                o = 1;
             }
         }
-        console.log(k);
-    }
-    console.log(counterForColor + " " + counterForColor*singlePoint);
+        afterHour = figureOutHours+1;
+        //console.log(figureOut + " - " + figureOutDays + ":" + figureOutHours);
+        document.getElementById("displayOfData").innerHTML = arrayOfDays[figureOutDays].tDate.split("-").shift() + "<br>" + figureOutHours + ":00-" + afterHour + ":00<br>Tweets: " + arrayOfDays[figureOutDays][Object.keys(arrayOfDays[figureOutDays])[figureOutHours]];
+    });
+}
 
+function daysBetweenFunction(startDate, endDate) {
+    var time = endDate.getTime() - startDate.getTime();
+    days = Math.floor(time/(24 * 60 * 60 * 1000));
+    return days;
+    //console.log(days + " days between " + startDate + " and " + endDate);
 }
 
 function creatingTweetOverview(dataset) {
@@ -918,220 +952,8 @@ function personWithHighestTweets(dataset,div) {
         }
         document.getElementById(div).appendChild(fieldZ);
         document.getElementById("contributorField1-"+u).innerHTML = "<div class='tweeterName'>" + allTweets[u].name + " (<i><div class='handleOfUser'>" + allTweets[u].handle + "</div></i>) </div><div class='tweeterInfoOfName'>" + allTweets[u].numberOfTweets + " tweets </div>";
-        document.getElementById("contributorField1-"+u).onclick=function(){showPersonalStatistics(dataset,this.id);};
+        document.getElementById("contributorField1-"+u).onclick=function(){showEntireEventTweetProgress(dataset,this.getElementsByClassName("handleOfUser")[0].innerHTML);};
     }
-}
-
-function showPersonalStatistics(dataset,person) {
-    removePersonalStatistics();
-    var startDate = sortDatasetAfterDate(dataset,0);
-    var endDate = sortDatasetAfterDate(dataset,1);
-    var days = [];
-    var hours = [];
-    var existing = 0;
-    var nameOfTweeter = "";
-    for(n=0;n<dataset.length;n++) {
-        existing = 0;
-        for(y=0;y<days.length;y++) {
-            //console.log(dataset[n].handle + " ---- " + document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
-            if(dataset[n].realtime.getDate() === days[y][0].realtime.getDate() && dataset[n].realtime.getMonth() === days[y][0].realtime.getMonth() && dataset[n].realtime.getFullYear() === days[y][0].realtime.getFullYear()) {
-                if(dataset[n].handle === document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML) {
-                nameOfTweeter = dataset[n].tweeter;
-                existing = 1;
-                days[y].push(dataset[n]);
-                }
-            }
-        }
-        if(existing === 0) {
-            //console.log("NEW! " + dataset[n].realtime + " " + dataset[n].tweet + " " + dataset[n].datatime);
-            if(dataset[n].handle === document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML) {
-            days[days.length] = new Array();
-            days[days.length-1].push(dataset[n]);
-            }
-        }
-    }
-    var oneDay = 24*60*60*1000;
-    //console.log("here!");
-    //console.log(startDate.realtime);
-    var diffDays = Math.ceil(Math.abs((startDate.realtime.getTime() - endDate.realtime.getTime())/(oneDay)));
-    for(u=0;u<diffDays;u++) {
-        hours[hours.length] = new Array();
-        for(h=0;h<24;h++) {
-            var value = 0;
-            hours[hours.length-1].push(value);
-        }
-    }
-    for(i=0;i<days.length;i++) {
-        for(h=0;h<days[i].length;h++) {
-                var day = Math.ceil(Math.abs((startDate.realtime.getTime() - days[i][h].realtime.getTime())/(oneDay)));
-                if(day != 0) {
-                    day = day - 1;
-                }
-                var hour = days[i][h].realtime.getHours();
-                //console.log(day + " ! " + days[i][h].realtime + " " + hour);
-                //console.log(days[i][h]);
-                hours[day][hour] = hours[day][hour] + 1;
-        }
-    }
-    //DRAW HOURS PLXPLX
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
-    document.getElementById("canvasHeadline").innerHTML = "All tweets in the dataset by " + nameOfTweeter + " <i>(" + document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML + ")</i>" +  " over the entire period of time.";
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    var startDateToText = new Date();
-    startDateToText.setTime(startDate.realtime.getTime());
-    var difference = canvas.width/diffDays;
-    var singlePoint = (canvas.width/diffDays)/24;
-    for(u=0;u<diffDays;u++) {
-        for(y=1;y<24;y++) {
-            ctx.strokeStyle = "#000000";
-            ctx.beginPath();
-            ctx.moveTo((singlePoint*y)+(u*difference),281);
-            ctx.lineTo((singlePoint*y)+(u*difference),283);
-            ctx.stroke();
-            //if(y%2 == 0) {
-               ctx.font="7px Trebuchet MS";
-               ctx.fillStyle="white";
-                if(y < 10) {
-                    //ctx.fillText(y,(singlePoint*y)+(u*difference)-3,290);
-                }
-                else {
-                    //ctx.fillText(y,(singlePoint*y)+(u*difference)-5,290);
-                }
-            //}
-        }
-    }
-    ctx.strokeStyle = "white";
-    ctx.fillStyle = "white";
-    ctx.beginPath();
-    ctx.moveTo(5,5);
-    ctx.lineTo(5,280);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(5,280);
-    ctx.lineTo(canvas.width-5,280);
-    ctx.stroke();
-    ctx.font="10px Trebuchet MS";
-    var monthToDisplay = startDateToText.getMonth() + 1;
-    ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,0,295);
-    startDateToText.setDate(startDateToText.getDate()+1);
-    for(y=1;y<diffDays;y++) {
-        ctx.strokeStyle = "#000000";
-        ctx.beginPath();
-        console.log()
-        ctx.moveTo(Math.floor(y*difference),280);
-        ctx.lineTo(Math.floor(y*difference),285);
-        ctx.stroke();
-        ctx.font="10px Trebuchet MS";
-        //ctx.fillText(startDateToText.getDate() + "/" + monthToDisplay,y*difference-10,295);
-        startDateToText.setDate(startDateToText.getDate()+1);
-        monthToDisplay = startDateToText.getMonth() + 1;
-    }
-    var highestHour = 0;
-    var totalNumberOfEntries = 0;
-    for(n=0;n<hours.length;n++) {
-        for(k=0;k<hours[n].length;k++) {
-            totalNumberOfEntries = totalNumberOfEntries + 1;
-            if(hours[n][k] >= highestHour) {
-                highestHour = hours[n][k];
-            }
-        }
-    }
-    //hours.reverse();
-    //days.reverse();
-
-    for(y=0;y<4;y++) {
-        var number = [1,1.3333333,2,4];
-        //if(Math.floor(highestHour/number[y]) != 0) {
-            ctx.strokeStyle ="rgba(127,127,127, 0.3)";
-            ctx.beginPath();
-            ctx.moveTo(5,(280-((280-5)/number[y])));
-            ctx.lineTo(document.getElementById("canvas").width,(280-((280-5)/number[y])));
-            ctx.stroke();
-            //console.log((300-((300-5)/number[y])));
-            ctx.strokeStyle = "#000000";
-            ctx.fillText((highestHour/number[y]).toFixed(2),10,(280-((280-5)/number[y]))+5);
-            //ctx.fillText(Math.floor(highestHour/number[y]),10,(280-((280-5)/number[y]))+5);
-           // }
-        }
-
-    //console.log(hours);
-    var counterForColorForArc = 0;
-    for(n=0;n<hours.length;n++) {
-        ctx.fillStyle = "white";
-        ctx.font = "16px Trebuchet MS";
-        for(k=0;k<hours[n].length;k++) {
-            var heightZ;
-            if(hours[n][k] === 0) {
-                heightZ = 280;
-            }
-            else {
-                heightZ = 280 - ((hours[n][k] / highestHour) * 275);
-            }
-            var hour = k + 1;
-            //console.log("day: " + n + " hour: " + hour + " number of tweets: " + hours[n][k] + " height: " + heightZ);
-            var color1 = Math.round((255/totalNumberOfEntries)*counterForColorForArc);
-            var color2 = Math.round(255 - ((255/totalNumberOfEntries)*counterForColorForArc));
-            var colorForArc = "rgba(" + color1 + ", 127, " + color2 + " , 0.4)";
-            ctx.strokeStyle = colorForArc;
-            ctx.fillStyle = colorForArc;
-            ctx.beginPath();
-            //console.log(arrayOfDividers[k] + " " + heightZ + " " + hours[n][k]);
-            //ctx.arc((singlePoint*(k))+((n)*difference)+(singlePoint/2),heightZ,4,0,2*Math.PI);
-            ctx.stroke();
-            ctx.closePath();
-            ctx.fill();
-            counterForColorForArc = counterForColorForArc + 1;
-            //console.log("painting?");
-        }
-    }
-    var counterForColor = 0;
-    for(n=0;n<hours.length;n++) {
-        for(k=0;k<hours[n].length;k++) {
-            var draw = 1;
-            var HZ;
-            var HX;
-            if(hours[n][k] === 0) {
-                HZ = 280;
-            }
-            else {
-                HZ = 280 - ((hours[n][k] / highestHour) * 275);
-            }
-            if(hours[n][k+1] === 0) {
-                HX = 280;
-            }
-            else if(hours[n][k+1] === undefined) {
-                try {
-                HX = 280 - ((hours[n+1][0] / highestHour) * 275);
-                //console.log(hours[n+1][0] + " " + HX);
-                }
-                catch(err) {
-                   draw = 0;
-                }
-            }
-            else {
-                HX = 280 - ((hours[n][k+1] / highestHour) * 275);
-            }
-            if(draw === 1) {
-            var color1 = Math.round((255/totalNumberOfEntries)*counterForColor);
-            var color2 = Math.round(255 - ((255/totalNumberOfEntries)*counterForColor));
-            var color = "rgba(" + color1 + ", 127, " + color2 + " , 1)";
-            //console.log(color + "heya");
-            ctx.strokeStyle = color;
-            ctx.beginPath();
-            ctx.moveTo((singlePoint*(k))+((n)*difference)+(singlePoint/2)+5,HZ);
-            ctx.lineTo((singlePoint*(k+1))+((n)*difference)+(singlePoint/2)+5,HX);
-            ctx.stroke();
-            counterForColor = counterForColor + 1;
-            }
-        }
-    }
-    mostPersonalLikedTweets(globalData,document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML,"field2");
-    mostPersonalRetweetedTweets(globalData,document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML,"field3");
-    createFinalPersonalVisualization(document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
-    personalOutwardRelations(dataset,document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
-    //console.log(document.getElementById(person).getElementsByClassName("handleOfUser")[0].innerHTML);
-    //console.log(hours);
 }
 
 function mostPersonalLikedTweets(dataset, handle,div) {
