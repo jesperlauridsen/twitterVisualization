@@ -14,7 +14,7 @@ function initalStartUp() {
         introduction.id = "introduction";
         introduction.className = "introductionClass";
         document.body.appendChild(introduction);
-        document.getElementById("introduction").innerHTML += "<p>Choose a dataset to see visualized from the menu.</p><p>The overall stats for the hashtag in the given period <br> will be shown first, and afterwards it's possible to dive <br> deeper into each of the contributors in the period <br> of the dataset in the column called 'Biggest contributors'.</p>"
+        document.getElementById("introduction").innerHTML += "<p>Choose a dataset to see visualized from the menu.</p><p>The overall stats for the hashtag in the given period <br> will be shown first, and afterwards it's possible to dive <br> deeper into each of the contributors in the period <br> of the dataset in the column called 'Most contributions'.</p>"
     }
     else if(myParam === "aarhusuni") {
         loadTwitterData('hashtagaarhusuni.csv','#aarhusuni');
