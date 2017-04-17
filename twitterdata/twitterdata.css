@@ -339,19 +339,22 @@ h3 {
 
 #startScreen {
     width: 100%;
-    height: 100%;
+    height: auto;
 }
 
-#startScreen p:nth-of-type(1) {
+#introduction p:nth-of-type(1) {
     color:white;
 }
 
-#startScreen p {
+#introduction p {
     text-align:center;
     color:grey;
 }
 
-
+#introduction {
+    width:100%;
+    height:auto;
+}
 
 #startScreen #generalStatisticsMenuContainer {
     position:relative;
