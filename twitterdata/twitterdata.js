@@ -1,6 +1,34 @@
 var globalData;
 var dataInjected = 0;
 
+function initalStartUp() {
+    var myParam = location.search.split('dataset=')[1];
+    console.log(myParam);
+    if(myParam === undefined) {
+        var startScreen = document.createElement('div');
+        startScreen.id = "startScreen";
+        startScreen.className = "startScreenClass";
+        document.body.appendChild(startScreen);
+        generateMenu("startScreen");
+        document.getElementById("startScreen").innerHTML += "<p>Choose a dataset to see visualized from the menu.</p><p>The overall stats for the hashtag in the given period <br> will be shown first, and afterwards it's possible to dive <br> deeper into each of the contributors in the period <br> of the dataset in the column called 'Biggest contributors'.</p>"
+    }
+    else if(myParam === "aarhusuni") {
+        loadTwitterData('hashtagaarhusuni.csv','#aarhusuni');
+    }
+    else if(myParam === "ultratwitteragf") {
+        loadTwitterData('try2.csv','#ultratwitteragf');
+    }
+    else if(myParam === "aarhus") {
+        loadTwitterData('hashtagaarhus.csv','#aarhus');
+    }
+    else if(myParam === "dst4l") {
+        loadTwitterData('finaltweeterdata-sorted2.csv','#DST4L');
+    }
+    else {
+        loadTwitterData('finaltweeterdata-sorted2.csv','#DST4L');
+    }
+}
+
 function loadTwitterData(url,hashtag) {
     loadscreen();
     var rawFile = new XMLHttpRequest();
@@ -207,15 +235,8 @@ function generateOverallDatasetStatistics(dataset,hashtag) {
     document.getElementById("intro").appendChild(generalStatistics);
     document.getElementById("generalStatisticsHeadlineContainer").innerHTML = "General statistics for dataset";
 
-    var generalStatisticsMenuContainer = document.createElement('div');
-    generalStatisticsMenuContainer.id = "generalStatisticsMenuContainer";
-    generalStatisticsMenuContainer.className = "generalStatisticsMenuContainerClass";
-    document.getElementById("intro").appendChild(generalStatisticsMenuContainer);
-    document.getElementById("generalStatisticsMenuContainer").innerHTML = "menu <br><br><ul style='text-align:left;'><li id='option1'>#DST4L</li><li id='option2'>#ultratwitteragf</li><li id='option3'>#aarhus</li><li id='option4'>#aarhusuni</li></ul>";
-    document.getElementById("option1").onclick=function(){loadTwitterData('finaltweeterdata-sorted2.csv','#DST4L');};
-    document.getElementById("option2").onclick=function(){loadTwitterData('try2.csv','#ultratwitteragf');};
-    document.getElementById("option3").onclick=function(){loadTwitterData('hashtagaarhus.csv','#aarhus');};
-    document.getElementById("option4").onclick=function(){loadTwitterData('hashtagaarhusuni.csv','#aarhusuni');};
+    generateMenu("intro");
+
     for(y=0;y<8;y++) {
         var generalStatistics = document.createElement('div');
         generalStatistics.id = "generalStatisticsContainer" + y;
@@ -234,6 +255,18 @@ function generateOverallDatasetStatistics(dataset,hashtag) {
 		explanationP.appendChild(explanationNode);
         document.getElementById("generalStatisticsContainer"+y).appendChild(explanationP);
     }
+}
+
+function generateMenu(div) {
+    var generalStatisticsMenuContainer = document.createElement('div');
+    generalStatisticsMenuContainer.id = "generalStatisticsMenuContainer";
+    generalStatisticsMenuContainer.className = "generalStatisticsMenuContainerClass";
+    document.getElementById(div).appendChild(generalStatisticsMenuContainer);
+    document.getElementById("generalStatisticsMenuContainer").innerHTML = "menu <br><br><ul style='text-align:left;'><li id='option1'>#DST4L</li><li id='option2'>#ultratwitteragf</li><li id='option3'>#aarhus</li><li id='option4'>#aarhusuni</li></ul>";
+    document.getElementById("option1").onclick=function(){loadTwitterData('finaltweeterdata-sorted2.csv','#DST4L');};
+    document.getElementById("option2").onclick=function(){loadTwitterData('try2.csv','#ultratwitteragf');};
+    document.getElementById("option3").onclick=function(){loadTwitterData('hashtagaarhus.csv','#aarhus');};
+    document.getElementById("option4").onclick=function(){loadTwitterData('hashtagaarhusuni.csv','#aarhusuni');};
 }
 
 function plotDataForAllDaysIn24HourInterval(dataset) {
