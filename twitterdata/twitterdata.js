@@ -90,7 +90,7 @@ function loadscreen() {
         }
         else {
             document.getElementById("loadingScreenOverall").style.display = "block";
-            console.log("LOADING DAMNIT!");
+            //console.log("LOADING DAMNIT!");
         }
 }
 
@@ -211,10 +211,11 @@ function generateOverallDatasetStatistics(dataset,hashtag) {
     generalStatisticsMenuContainer.id = "generalStatisticsMenuContainer";
     generalStatisticsMenuContainer.className = "generalStatisticsMenuContainerClass";
     document.getElementById("intro").appendChild(generalStatisticsMenuContainer);
-    document.getElementById("generalStatisticsMenuContainer").innerHTML = "menu <br><br><ul style='text-align:left;'><li id='option1'>#DST4L</li><li id='option2'>#ultratwitteragf</li><li id='option3'>#aarhus</li></ul>";
+    document.getElementById("generalStatisticsMenuContainer").innerHTML = "menu <br><br><ul style='text-align:left;'><li id='option1'>#DST4L</li><li id='option2'>#ultratwitteragf</li><li id='option3'>#aarhus</li><li id='option4'>#aarhusuni</li></ul>";
     document.getElementById("option1").onclick=function(){loadTwitterData('finaltweeterdata-sorted2.csv','#DST4L');};
     document.getElementById("option2").onclick=function(){loadTwitterData('try2.csv','#ultratwitteragf');};
     document.getElementById("option3").onclick=function(){loadTwitterData('hashtagaarhus.csv','#aarhus');};
+    document.getElementById("option4").onclick=function(){loadTwitterData('hashtagaarhusuni.csv','#aarhusuni');};
     for(y=0;y<8;y++) {
         var generalStatistics = document.createElement('div');
         generalStatistics.id = "generalStatisticsContainer" + y;
