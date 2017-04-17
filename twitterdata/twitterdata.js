@@ -2,6 +2,7 @@ var globalData;
 var dataInjected = 0;
 
 function loadTwitterData(url,hashtag) {
+    loadscreen();
     var rawFile = new XMLHttpRequest();
     rawFile.open("GET",url,true);
     //rawFile.open("GET", "finaltweeterdata-sorted2.csv", true);
@@ -60,6 +61,30 @@ function showFirstTwitterData(hashtag) {
     //personalOutwardRelations(globalData,"@knanton");
     //plotDataForAllDaysIn24HourInterval(globalData);
     generateFooter();
+}
+
+function loadscreen() {
+        if(document.getElementById("loadingScreenOverall") === null) {
+        var loadingScreen = document.createElement('div');
+        loadingScreen.id = "loadingScreenOverall";
+        loadingScreen.className = "loadingScreenClass";
+        document.body.appendChild(loadingScreen);
+
+        var loading = document.createElement('div');
+        loading.id = "loading";
+        loading.className = "loadingClass";
+        document.getElementById("loadingScreenOverall").appendChild(loading);
+        document.getElementById("loading").inneHTML = "Loading";
+
+        var rotatingLoadingScreen = document.createElement('div');
+        rotatingLoadingScreen.id = "rotatingLoadingScreen";
+        rotatingLoadingScreen.className = "rotatingLoadingScreenClass";
+        document.getElementById("loading").appendChild(rotatingLoadingScreen);
+        }
+        else {
+            document.getElementById("loadingScreenOverall").style.display = "block";
+            console.log("LOADING DAMNIT!");
+        }
 }
 
 function reshowFirstTwitterData() {
@@ -179,9 +204,10 @@ function generateOverallDatasetStatistics(dataset,hashtag) {
     generalStatisticsMenuContainer.id = "generalStatisticsMenuContainer";
     generalStatisticsMenuContainer.className = "generalStatisticsMenuContainerClass";
     document.getElementById("intro").appendChild(generalStatisticsMenuContainer);
-    document.getElementById("generalStatisticsMenuContainer").innerHTML = "menu <br><br><ul style='text-align:left;'><li id='option1'>#DST4L</li><li id='option2'>#ultratwitteragf</li></ul>";
+    document.getElementById("generalStatisticsMenuContainer").innerHTML = "menu <br><br><ul style='text-align:left;'><li id='option1'>#DST4L</li><li id='option2'>#ultratwitteragf</li><li id='option3'>#aarhus</li></ul>";
     document.getElementById("option1").onclick=function(){loadTwitterData('finaltweeterdata-sorted2.csv','#DST4L');};
     document.getElementById("option2").onclick=function(){loadTwitterData('try2.csv','#ultratwitteragf');};
+    document.getElementById("option3").onclick=function(){loadTwitterData('hashtagaarhus.csv','#aarhus');};
     for(y=0;y<8;y++) {
         var generalStatistics = document.createElement('div');
         generalStatistics.id = "generalStatisticsContainer" + y;
@@ -516,7 +542,7 @@ function showEntireEventTweetProgress(dataset,person) {
         }
     // -- plot in the entire graph
     var counterForColor = 0;
-    console.log(arrayOfDays);
+    //console.log(arrayOfDays);
     for(l=0;l<Object.keys(arrayOfDays).length;l++) {
          for(x=0;x<Object.keys(arrayOfDays[l]).length-2;x++) {
             var draw = 1;
@@ -567,8 +593,8 @@ function showEntireEventTweetProgress(dataset,person) {
              counterForColor = counterForColor + 1;
         }
     }
-    console.log(counterForColor);
-    console.log(arrayOfDays);
+    //console.log(counterForColor);
+    //console.log(arrayOfDays);
     if(person != undefined) {
         mostPersonalLikedTweets(globalData,person,"field2");
         mostPersonalRetweetedTweets(globalData,person,"field3");
@@ -1325,7 +1351,7 @@ function personalOutwardRelations(dataset,person) {
                 authorFrequency.push(authorObject);
                 }
             }
-            console.log(f + " at: " + tweetArray[j].tweet.indexOf("@",lastIndex) + " to " + tweetArray[j].tweet.indexOf(" ",tweetArray[j].tweet.indexOf("@",lastIndex)+1) + " name: " + name);
+            //console.log(f + " at: " + tweetArray[j].tweet.indexOf("@",lastIndex) + " to " + tweetArray[j].tweet.indexOf(" ",tweetArray[j].tweet.indexOf("@",lastIndex)+1) + " name: " + name);
             lastIndex = tweetArray[j].tweet.indexOf("@",lastIndex) + 1;
         }
         //console.log(counter);
@@ -1334,7 +1360,7 @@ function personalOutwardRelations(dataset,person) {
 }
 
 function showPersonalOutwardRelations(dataArray,person) {
-    console.log(dataArray);
+    //console.log(dataArray);
     var canvas = document.createElement('canvas');
     var ctx = canvas.getContext("2d");
     canvas.id = "personalRelationsCanvas";
@@ -1381,12 +1407,12 @@ function showPersonalOutwardRelations(dataArray,person) {
         var color1 =  Math.floor((Math.random() * 150) + 0);  //Math.round((255/dataArray.length)*u);
         var color2 =  Math.floor((Math.random() * 105) + 150);//Math.round(255 - ((255/dataArray.length)*u));
         var opacity = dataArray[u].number/highestValue;
-        console.log(opacity);
+        //console.log(opacity);
         color = "rgba(" + color1 + ",127," + color2 + "," + opacity + ")";
         ctx.strokeStyle = color;
         //console.log(ctx.measureText(dataArray[u].name).width);
         //distance = ctx.measureText(dataArray[u].name).width;
-        console.log(dataArray[u].number/highestValue + " from " + dataArray[u].name);
+        //console.log(dataArray[u].number/highestValue + " from " + dataArray[u].name);
         distance = ((dataArray[u].number/highestValue) * (calHeight-(longestName))) - 10; //dataArray[u].number * highestValue;
         //console.log(distance + " translated from " + dataArray[u].number + " from " + dataArray[u].name);
         var x2 = document.getElementById("personalRelationsContainer").clientWidth/2 + Math.cos(angle * TO_RADIANS) * (calHeight - distance);

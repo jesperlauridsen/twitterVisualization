@@ -338,12 +338,20 @@ h3 {
 }
 
 .generalStatisticsMenuContainerClass li {
+    -webkit-transition: all 250ms ease-out 0s;
+    -moz-transition: all 250ms ease-out 0s;
+    -o-transition: all 250ms ease-out 0s;
+    transition: all 250ms ease-out 0s;
     color:white;
+}
+
+.generalStatisticsMenuContainerClass li:hover {
+    color:#FF842B;
 }
 
 .generalStatisticsMenuContainerClass:hover {
     color:rgba(255, 132, 43, 1);
-    height:110px;
+    height:120px;
     background-color:rgba(81,70,105,1);
     //border:1px solid rgba(255, 132, 43, 0.5);
     //overflow: visible;
@@ -402,4 +410,74 @@ h3 {
 ::-webkit-scrollbar-thumb {
     background: rgba(255,255,255,0.8);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+}
+
+#loading {
+  width:200px;
+  height:200px;
+  margin:auto;
+  margin-top:25%;
+  position:relative;
+  text-align:center;
+  line-height:200px;
+  color:white;
+}
+
+#rotatingLoadingScreen {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position:absolute;
+  font-family:Verdana;
+  width:100px;
+  height:100px;
+  border:4px dotted white;
+  border-radius:180px;
+  top:50px;
+  text-align:center;
+  left:50px;
+  font-size:25px;
+  float:left;
+  -webkit-animation-name: rotatingLoad;
+    -webkit-animation-duration: 10000ms;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-name: rotatingLoad;
+    -moz-animation-duration: 10000ms;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    -ms-animation-name: rotatingLoad;
+    -ms-animation-duration: 10000ms;
+    -ms-animation-iteration-count: infinite;
+    -ms-animation-timing-function: linear;
+}
+
+#loadingScreenOverall {
+    width:100%;
+    height:100%;
+    position:absolute;
+    top:0px;
+    z-index:100;
+    background-color:rgba(100,100,100,0.5);
+}
+
+@-ms-keyframes rotatingLoad {
+    from { -ms-transform: rotate(0deg); }
+    to { -ms-transform: rotate(360deg); }
+}
+@-moz-keyframes rotatingLoad {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes rotatingLoad {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes rotatingLoad {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
 }
