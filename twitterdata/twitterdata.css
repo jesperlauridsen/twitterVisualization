@@ -353,6 +353,7 @@ h3 {
     color:rgba(255, 132, 43, 1);
     height:150px;
     background-color:rgba(81,70,105,1);
+    border: 1px solid rgba(96,85,120,1);
     //border:1px solid rgba(255, 132, 43, 0.5);
     //overflow: visible;
     //background-color:rgba(255, 132, 43, 0.6);
