@@ -40,11 +40,18 @@ function loadTwitterData(url,hashtag) {
                 //console.log(globalData);
                 dataInjected = 1;
                 document.body.innerHTML = "";
+                loadBackgroundImage();
                 showFirstTwitterData(hashtag);
             }
         }
     }
     rawFile.send(null);
+}
+
+function loadBackgroundImage() {
+    var backgroundImage = document.createElement('div');
+    backgroundImage.id = "backgroundImage";
+    document.body.appendChild(backgroundImage);
 }
 
 function showFirstTwitterData(hashtag) {
