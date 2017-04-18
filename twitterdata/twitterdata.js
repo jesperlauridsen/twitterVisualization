@@ -730,7 +730,7 @@ function creatingTweetOverview(dataset) {
     headline.id = "headline1";
     headline.className = "headline";
     document.getElementById("headlineContainer").appendChild(headline);
-    document.getElementById("headline1").innerHTML = "<h3>Most contributions </h3><p style='display:inline-block;margin-left:5px;font-size:12px;color:grey'>- click to see individual statistics</p>";
+    document.getElementById("headline1").innerHTML = "<h3>Most contributions </h3><p class='seeMoreFromContributors'>- click to see individual statistics</p>";
 
     var headline1 = document.createElement('div');
     headline1.id = "headline2";
