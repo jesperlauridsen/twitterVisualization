@@ -461,12 +461,12 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
 }
 
 function showEntireEventTweetProgress(dataset,person) {
+    removePersonalStatistics();
     if(person != undefined) {
     var hashtag = document.getElementById("mainNumberNode3").innerHTML.slice(1);
     var handle = person.slice(1);
     window.history.replaceState( {} , '', '?dataset=' + hashtag + "&handle=" + handle);
     }
-    removePersonalStatistics();
     // -- Set up the info for the canvas
     var canvas = document.getElementById("canvas");
     console.log(canvas);
@@ -1172,6 +1172,8 @@ function removePersonalStatistics() {
    document.getElementById("personalVisualization").innerHTML = "";
    document.getElementById("headline2").getElementsByTagName("h3")[0].innerHTML = "Most liked tweets";
    document.getElementById("headline3").getElementsByTagName("h3")[0].innerHTML = "Most retweeted tweets";
+   window.history.replaceState( {} , '', '?dataset=' + document.getElementById("mainNumberNode3").innerHTML.slice(1));
+
 }
 
 function createEntirePersonalRelationsFrame(div,person) {
