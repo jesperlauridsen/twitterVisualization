@@ -2,9 +2,16 @@ var globalData;
 var dataInjected = 0;
 
 function initalStartUp() {
-    var myParam = location.search.split('dataset=')[1];
-    console.log(myParam);
-    if(myParam === undefined) {
+    var myParam1 = location.search.split('dataset=')[1];
+    if(myParam1 != undefined && myParam1.indexOf('&') > -1) {
+        myParam1 = myParam1.substr(0, myParam1.indexOf('&'));
+    }
+    var myParam2 = location.search.split('handle=')[1];
+    if(myParam2 != undefined) {
+        myParam2 = "@" + myParam2;
+    }
+    console.log(myParam1 + " " + myParam2);
+    if(myParam1 === undefined) {
         var startScreen = document.createElement('div');
         startScreen.id = "startScreen";
         startScreen.className = "startScreenClass";
@@ -16,26 +23,53 @@ function initalStartUp() {
         document.body.appendChild(introduction);
         document.getElementById("introduction").innerHTML += "<p>Choose a dataset to see visualized from the menu.</p><p>The overall stats for the hashtag in the given period <br> will be shown first, and afterwards it's possible to dive <br> deeper into each of the contributors in the period <br> of the dataset in the column called 'Most contributions'.</p>"
     }
-    else if(myParam === "aarhusuni") {
+    else if(myParam1.toLocaleLowerCase() === "aarhusuni") {
         loadTwitterData('hashtagaarhusuni.csv','#aarhusuni');
+        if(myParam2 =! undefined) {
+             loadTwitterData('hashtagaarhusuni.csv','#aarhusuni',myParam2);
+        }
     }
-    else if(myParam === "ultratwitteragf") {
+    else if(myParam1.toLocaleLowerCase() === "ultratwitteragf") {
         loadTwitterData('try2.csv','#ultratwitteragf');
+        if(myParam2 != undefined) {
+            loadTwitterData('try2.csv','#ultratwitteragf',myParam2);
+        }
     }
-    else if(myParam === "aarhus") {
+    else if(myParam1.toLocaleLowerCase() === "aarhus") {
         loadTwitterData('hashtagaarhus.csv','#aarhus');
+        if(myParam2 != undefined) {
+            loadTwitterData('hashtagaarhus.csv','#aarhus',myParam2);
+        }
     }
-    else if(myParam === "dst4l") {
+    else if(myParam1.toLocaleLowerCase() === "dst4l") {
         loadTwitterData('finaltweeterdata-sorted2.csv','#DST4L');
+        if(myParam2 != undefined) {
+            loadTwitterData('finaltweeterdata-sorted2.csv','#DST4L',myParam2);
+        }
     }
     else {
-        loadTwitterData('finaltweeterdata-sorted2.csv','#DST4L');
+        var startScreen = document.createElement('div');
+        startScreen.id = "startScreen";
+        startScreen.className = "startScreenClass";
+        document.body.appendChild(startScreen);
+        generateMenu("startScreen");
+        var introduction = document.createElement('div');
+        introduction.id = "introduction";
+        introduction.className = "introductionClass";
+        document.body.appendChild(introduction);
+        document.getElementById("introduction").innerHTML += "<p>Dataset not found, champ. Sorry :(.</p><p>Choose a dataset to see visualized from the menu.</p><p>The overall stats for the hashtag in the given period <br> will be shown first, and afterwards it's possible to dive <br> deeper into each of the contributors in the period <br> of the dataset in the column called 'Most contributions'.</p>"
     }
 }
 
-function loadTwitterData(url,hashtag) {
-    var dataset = hashtag.slice(1)
+function loadTwitterData(url,hashtag,person) {
+    var dataset = hashtag.slice(1);
+    if(person === undefined) {
     window.history.replaceState( {} , '', '?dataset=' + dataset);
+    }
+    else {
+    var handle = person.slice(1);
+    window.history.replaceState( {} , '', '?dataset=' + dataset + "&handle=" + handle);
+    }
     loadscreen();
     var rawFile = new XMLHttpRequest();
     rawFile.open("GET",url,true);
@@ -75,7 +109,7 @@ function loadTwitterData(url,hashtag) {
                 dataInjected = 1;
                 document.body.innerHTML = "";
                 loadBackgroundImage();
-                showFirstTwitterData(hashtag);
+                showFirstTwitterData(hashtag,person);
             }
         }
     }
@@ -88,16 +122,18 @@ function loadBackgroundImage() {
     document.body.appendChild(backgroundImage);
 }
 
-function showFirstTwitterData(hashtag) {
+function showFirstTwitterData(hashtag,person) {
     sanatizeData(globalData);
     generateSetup();
     generateOverallDatasetStatistics(globalData,hashtag);
     //introductonToStatistics(globalData,"DST4L");
     creatingTweetOverview(globalData);
-    showEntireEventTweetProgress(globalData);
+    showEntireEventTweetProgress(globalData,person);
     personWithHighestTweets(globalData,"field");
+    if(person === undefined) {
     showMostLiked(globalData,"field2");
     showMostRetweeted(globalData,"field3");
+        }
     //sortDatasetAfterDate(globalData);
     //personalOutwardRelations(globalData,"@knanton");
     //plotDataForAllDaysIn24HourInterval(globalData);
@@ -425,9 +461,15 @@ function plotDataForAllDaysIn24HourInterval(dataset) {
 }
 
 function showEntireEventTweetProgress(dataset,person) {
+    if(person != undefined) {
+    var hashtag = document.getElementById("mainNumberNode3").innerHTML.slice(1);
+    var handle = person.slice(1);
+    window.history.replaceState( {} , '', '?dataset=' + hashtag + "&handle=" + handle);
+    }
     removePersonalStatistics();
     // -- Set up the info for the canvas
     var canvas = document.getElementById("canvas");
+    console.log(canvas);
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if(person != undefined) {
@@ -1049,6 +1091,7 @@ function mostPersonalLikedTweets(dataset, handle,div) {
     tweets.sort(function(a, b) {return parseFloat(a.likes) - parseFloat(b.likes);});
     tweets.reverse();
     //console.log(tweets);
+    document.getElementById("headline2").getElementsByTagName("h3")[0].innerHTML = "Most liked tweets by " + handle;
     for(u=0;u<tweets.length;u++) {
         var fieldZ = document.createElement('div');
         fieldZ.id = "contributorField2-" + u;
@@ -1075,6 +1118,7 @@ function mostPersonalRetweetedTweets(dataset, handle, div) {
     tweets.sort(function(a, b) {return parseFloat(a.retweets) - parseFloat(b.retweets);});
     tweets.reverse();
     //console.log(tweets);
+    document.getElementById("headline3").getElementsByTagName("h3")[0].innerHTML = "Most retweeted tweets by " + handle;
     for(u=0;u<tweets.length;u++) {
         var fieldZ = document.createElement('div');
         fieldZ.id = "contributorField3-" + u;
@@ -1126,6 +1170,8 @@ function addResetButton() {
 
 function removePersonalStatistics() {
    document.getElementById("personalVisualization").innerHTML = "";
+   document.getElementById("headline2").getElementsByTagName("h3")[0].innerHTML = "Most liked tweets";
+   document.getElementById("headline3").getElementsByTagName("h3")[0].innerHTML = "Most retweeted tweets";
 }
 
 function createEntirePersonalRelationsFrame(div,person) {
@@ -1174,7 +1220,12 @@ function likesOnTweets(dataset,person,div) {
     }
     var authors = findAllAuthors(dataset);
     average = (allLikes/authors) / (dataset.length/authors) * 100;
+    if(tweets === 0) {
+        result = 0;
+        }
+    else {
     result = likes/tweets * 100;
+    }
     //console.log(likes  + " - " + tweets);
     //console.log(average + " procentage of likes from " + authors + " doing " + allLikes + " liked tweets" + " all tweets " + dataset.length);
     createDiagram(div,0,"The procentage of tweets that was liked at least once", result,"#FF842B","grey",document.getElementById(div).clientHeight/3,likes,tweets,average);
@@ -1201,7 +1252,12 @@ function retweetsOfTweets(dataset,person,div) {
     }
     var authors = findAllAuthors(dataset);
     average = (allRetweets/authors) / (dataset.length/authors) * 100;
+    if(tweets === 0) {
+        result = 0;
+        }
+    else {
     result = retweets/tweets * 100;
+    }
     //console.log(retweets  + " - " + tweets);
     //console.log(average + " procentage of retweets from " + authors + " doing " + allRetweets + " retweeted tweets");
     createDiagram(div,1,"The procentage of tweets that was retweeted at least once", result,"#FF842B","grey",document.getElementById(div).clientHeight/3,retweets,tweets,average);
@@ -1229,7 +1285,12 @@ function engangementInTweets(dataset,person,div) {
     var authors = findAllAuthors(dataset);
     average = (tweetsFromAllusers/authors) / (dataset.length/authors) * 100;
     //average = tweetsFromAllusers/dataset.length * 100;
+    if(tweets === 0) {
+        result = 0;
+        }
+    else {
     result = tweetsWithUsers/tweets * 100;
+        }
     //console.log(retweets  + " - " + tweets);
     //console.log(average + " from " + tweetsFromAllusers + " tweets with engagement compared to all tweets " + dataset.length);
     createDiagram(div,2,"The procentage of tweets that had other users tagged in them", result,"#FF842B","grey",document.getElementById(div).clientHeight/3,tweetsWithUsers,tweets,average);
