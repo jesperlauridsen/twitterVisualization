@@ -188,7 +188,7 @@ function generateFooter() {
     footer.id = "jsprFooter";
     footer.className = "jsprFooterStyled";
     document.body.appendChild(footer);
-    document.getElementById("jsprFooter").innerHTML = "by <a href='https://www.twitter.com/justjspr'>jspr</a>, code at <a href='https://github.com/jesperlauridsen/twiviz'>github</a>";
+    document.getElementById("jsprFooter").innerHTML = "by <a href='https://www.twitter.com/justjspr'>jspr</a>, code at <a href='https://github.com/jesperlauridsen/twitterVisualization'>github</a>";
 }
 
 function generateOverallDatasetStatistics(dataset,hashtag) {
