@@ -107,7 +107,7 @@ h3 {
     display:inline-block;
     color:#FF842B;
     margin-left: 5px;
-    font-size: 12px;
+    font-size: 14px;
     -webkit-transition: all 500ms ease-out 0s;
     -moz-transition: all 500ms ease-out 0s;
     -o-transition: all 500ms ease-out 0s;
@@ -120,15 +120,11 @@ h3 {
     color:white;
 }
 
-#seeMoreFromContributors {
+.seeMoreFromContributors {
     display:inline-block;
     margin-left:5px;
-    font-size:12px;
+    font-size:14px;
     color:#FF842B;
-}
-
-#seeMoreFromContributors:hover {
-    color:white;
 }
 
 .personalVisualizationContainer h3 {

@@ -798,7 +798,6 @@ function introductonToStatistics(dataset,argument) {
        loadTwitterData();
     }
     generateSetup();
-    //console.log(globalData);
     sortedDataset = dataset.sort(function(a, b) {return parseFloat(a.datatime) - parseFloat(b.datatime);});
     var endDate = sortedDataset[sortedDataset.length-1].realtime;
     var startDate = sortedDataset[0].realtime;
