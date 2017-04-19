@@ -25,7 +25,7 @@ function initalStartUp() {
     }
     else if(myParam1.toLocaleLowerCase() === "aarhusuni") {
         loadTwitterData('hashtagaarhusuni.csv','#aarhusuni');
-        if(myParam2 =! undefined) {
+        if(myParam2 != undefined) {
              loadTwitterData('hashtagaarhusuni.csv','#aarhusuni',myParam2);
         }
     }
